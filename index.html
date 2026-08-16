@@ -1,0 +1,1198 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta name="description" content="CUBE RAGE — fast arcade game. Play, beat records, climb the ranking and join the community.">
+<meta name="theme-color" content="#080909">
+<meta property="og:title" content="CUBE RAGE — Play. Survive. Rage.">
+<meta property="og:description" content="Play CUBE RAGE, beat records, follow the latest news and share the game with friends.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/hero.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<title>CUBE RAGE</title>
+<style>
+:root{
+ --lime:#B8DB0D;--lime2:#d5f43a;--bg:#080909;--panel:#111313;--panel2:#171a1a;
+ --line:#2a2d2d;--muted:#8d9292;--white:#f7f7f5;--orange:#ffb52e;--red:#e84949;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--white);font-family:Arial,Helvetica,sans-serif}
+body{min-height:100vh}
+button,input{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+a{color:inherit}
+.hidden{display:none!important}
+#app{min-height:100vh}
+.top{
+ position:sticky;top:0;z-index:50;height:72px;padding:0 28px;
+ display:flex;align-items:center;gap:28px;background:rgba(8,9,9,.92);
+ border-bottom:1px solid #222;backdrop-filter:blur(14px)
+}
+.logo{font-size:25px;font-weight:1000;letter-spacing:-1.5px;white-space:nowrap}
+.logo b{color:var(--lime)}
+.nav{display:flex;gap:3px;flex:1}
+.nav button{border:0;background:transparent;color:#747979;padding:12px 14px;border-radius:9px;font-size:11px;font-weight:1000}
+.nav button:hover,.nav button.active{background:#191c1c;color:#fff}
+.user-mini{display:flex;align-items:center;gap:9px;border:0;background:transparent;color:#fff;font-size:11px;font-weight:1000}
+.user-mini img,.avatar{width:40px;height:40px;border-radius:11px;object-fit:cover;background:#252828;border:1px solid #3a3e3e}
+main{max-width:1240px;margin:auto;padding:24px 22px 70px}
+.view{display:none}.view.active{display:block}
+.hero{
+ min-height:650px;border:1px solid #2b2e2e;border-radius:24px;overflow:hidden;position:relative;
+ display:flex;align-items:flex-end;padding:52px;
+ background:
+ linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.62) 42%,rgba(0,0,0,.15) 100%),
+ linear-gradient(0deg,rgba(0,0,0,.72),transparent 65%),
+ url("assets/hero.jpg") center/cover no-repeat,#111;
+ box-shadow:0 30px 90px #0008;
+}
+.hero-copy{max-width:650px}
+.kicker{font-size:11px;font-weight:1000;letter-spacing:4px;color:var(--lime);margin-bottom:18px}
+.hero h1{font-size:clamp(62px,10vw,125px);line-height:.78;letter-spacing:-8px;margin:0 0 25px;font-weight:1000}
+.hero h1 span{color:var(--lime)}
+.hero p{font-size:16px;line-height:1.55;color:#b8bdbd;max-width:580px}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
+.btn{border:1px solid #343838;background:#1a1d1d;color:#fff;padding:12px 18px;border-radius:10px;font-size:11px;font-weight:1000}
+.btn:hover{border-color:#666}
+.btn.primary{background:var(--lime);color:#111500;border-color:var(--lime)}
+.btn.orange{background:var(--orange);color:#171000;border-color:var(--orange)}
+.btn.red{background:var(--red);border-color:var(--red)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:14px}
+.card{background:linear-gradient(145deg,#171a1a,#101212);border:1px solid #2a2d2d;border-radius:16px;padding:20px}
+.card h3{font-size:12px;margin:0 0 9px}
+.card p{font-size:12px;line-height:1.55;color:#7f8484;margin:0}
+.heading{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:8px 0 18px}
+.heading h2{font-size:34px;letter-spacing:-1px;margin:0;font-weight:1000}
+.heading p{font-size:12px;color:#777;margin:6px 0 0}
+.tabs{display:flex;gap:7px;margin-bottom:12px}
+.tab{border:1px solid #333;background:#151818;color:#777;padding:10px 20px;border-radius:9px;font-size:11px;font-weight:1000}
+.tab.active.easy{background:var(--lime);color:#111}
+.tab.active.medium{background:var(--orange);color:#111}
+.tab.active.hard{background:var(--red);color:#fff}
+.search{width:100%;background:#0d0f0f;border:1px solid #303333;color:#fff;padding:13px;border-radius:9px;outline:none;margin-bottom:12px}
+.search:focus,input:focus{border-color:var(--lime)}
+.table-wrap{border:1px solid #2b2e2e;border-radius:15px;overflow:hidden;background:#111313}
+table{width:100%;border-collapse:collapse}
+th,td{padding:13px 15px;border-bottom:1px solid #292c2c;text-align:left;font-size:11px}
+th{font-size:9px;color:#666;letter-spacing:.6px}
+tr:last-child td{border-bottom:0}
+tr.me{background:rgba(184,219,13,.08)}
+.player{display:flex;align-items:center;gap:10px;font-weight:900}
+.player img{width:38px;height:38px;border-radius:9px;object-fit:cover;background:#252828}
+.score{font-size:16px;font-weight:1000}
+.muted{color:#777}
+.loading,.empty{padding:50px 20px;text-align:center;color:#777;font-size:11px;font-weight:900}
+.err{color:#ff7777}
+.auth-wrap{max-width:510px;margin:45px auto}
+.auth-card{padding:24px}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:18px}
+label{display:block;color:#777;font-size:10px;font-weight:900;margin:12px 0 6px}
+input{width:100%;padding:13px;border-radius:9px;background:#0b0d0d;border:1px solid #303333;color:#fff;outline:0}
+.message{min-height:19px;margin-top:10px;font-size:11px;color:#ff7676}
+.profile-grid{display:grid;grid-template-columns:310px 1fr;gap:14px}
+.profile-card{text-align:center}
+.profile-card .avatar-big{width:128px;height:128px;border-radius:22px;object-fit:cover;background:#252828;border:1px solid #444;margin:0 auto 16px}
+.profile-card h3{font-size:24px;margin:0}
+.profile-card p{color:#777;font-size:11px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{background:#0d0f0f;border:1px solid #292c2c;border-radius:12px;padding:14px}
+.stat span{display:block;color:#666;font-size:9px;font-weight:900}
+.stat b{display:block;font-size:23px;margin-top:7px}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.news-img{width:100%;height:180px;object-fit:cover;border-radius:11px;margin-bottom:13px}
+.news-date{font-size:9px;color:#666;margin-bottom:7px}
+.game-box{border:1px solid #2b2e2e;border-radius:16px;background:#111313;padding:22px}
+.game-box .big-play{min-height:450px;border-radius:14px;background:
+ linear-gradient(145deg,rgba(184,219,13,.14),rgba(0,0,0,.85)),
+ url("assets/hero.jpg") center/cover;display:flex;align-items:center;justify-content:center;text-align:center}
+.big-play h2{font-size:50px;margin:0 0 10px}
+.big-play p{color:#bbb}
+footer{border-top:1px solid #202222;color:#555;text-align:center;padding:28px;font-size:9px}
+.toast{position:fixed;left:18px;bottom:18px;z-index:100;padding:14px 18px;border-radius:10px;background:#171a1a;border:1px solid #3b3f3f;box-shadow:0 15px 60px #0009;font-size:11px;font-weight:1000;display:none}
+.toast.show{display:block}.toast.ok{color:var(--lime)}.toast.bad{color:#ff7676}
+@media(max-width:850px){
+ .top{padding:0 14px}.nav{display:none}.cards,.news-grid,.profile-grid{grid-template-columns:1fr}
+ .hero{min-height:560px;padding:30px}.hero h1{letter-spacing:-5px}.stats{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){
+ main{padding:14px 10px 50px}.hero{border-radius:17px}.hero h1{font-size:62px}
+ th:nth-child(3),td:nth-child(3){display:none}.heading h2{font-size:28px}
+}
+
+.game-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:5px 3px 17px}
+.game-toolbar b{display:block;font-size:14px}
+.game-toolbar span{display:block;color:#676c6c;font-size:9px;margin-top:5px;font-weight:900}
+.game-frame-wrap{width:100%;aspect-ratio:16/9;min-height:480px;background:#050606;border:1px solid #303333;border-radius:14px;overflow:hidden}
+.game-frame-wrap iframe{width:100%;height:100%;border:0;background:#000}
+.game-frame-wrap .big-play{min-height:100%;border-radius:0}
+.hero:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,transparent 55%,rgba(184,219,13,.07));mix-blend-mode:screen}
+.hero-copy{position:relative;z-index:2}
+.hero{box-shadow:0 35px 100px #000b, inset 0 0 100px #0005}
+.card{box-shadow:0 12px 45px #0005}
+@media(max-width:760px){.game-toolbar{align-items:flex-start;flex-direction:column}.game-frame-wrap{min-height:300px}}
+
+
+.lang-switch{display:flex;gap:3px;background:#111313;border:1px solid #292d2d;border-radius:8px;padding:3px}
+.lang{border:0;background:transparent;color:#666;padding:7px 8px;border-radius:6px;font-size:9px;font-weight:1000}
+.lang.active{background:#B8DB0D;color:#101300}
+.section-rule{height:1px;background:linear-gradient(90deg,#B8DB0D,transparent);margin:0 0 22px}
+
+/* CUBE RAGE V5 — full visual refresh */
+body{
+ background:
+ radial-gradient(900px 500px at 78% -10%,rgba(184,219,13,.12),transparent 60%),
+ radial-gradient(700px 450px at -10% 45%,rgba(255,189,57,.06),transparent 60%),
+ #070808;
+}
+.top{height:80px;padding:0 30px;background:rgba(5,6,6,.94);border-bottom:1px solid #242827}
+.logo{font-size:30px;letter-spacing:-2px}
+.nav{justify-content:center}
+.nav button{padding:13px 15px;letter-spacing:1px}
+.user-mini{min-width:118px;justify-content:flex-end}
+.hero{
+ min-height:700px;
+ border:1px solid #333937;
+ background:
+ linear-gradient(90deg,rgba(4,5,5,.98) 0%,rgba(4,5,5,.82) 35%,rgba(4,5,5,.28) 70%,rgba(4,5,5,.55)),
+ linear-gradient(0deg,rgba(0,0,0,.9),transparent 62%),
+ url("assets/hero.jpg") center/cover no-repeat;
+}
+.hero-copy{max-width:720px}
+.hero h1{font-size:clamp(72px,11vw,150px);line-height:.74;letter-spacing:-10px}
+.hero p{font-size:17px;max-width:630px}
+.hero .actions .primary{min-width:170px}
+.cards{margin-top:16px;grid-template-columns:1.2fr 1fr 1fr}
+.card{border-radius:18px}
+.heading{margin-top:28px}
+.heading h2{font-size:44px}
+.tabs{background:#0d0f0f;border:1px solid #252928;border-radius:12px;padding:5px;width:max-content}
+.tab{border:0;background:transparent;padding:11px 20px}
+.tab.active.easy{background:#b8db0d}.tab.active.medium{background:#ffbd39}.tab.active.hard{background:#ef5350}
+.search{background:#0a0c0c;border-radius:12px;padding:15px}
+.table-wrap{border-radius:18px}
+th{padding:15px;color:#666}
+td{padding:15px}
+.player img{width:42px;height:42px;border-radius:12px}
+.podium{gap:14px;margin:0 0 16px}
+.podium-card{min-height:180px;border-radius:18px;padding:20px}
+.podium-card:nth-child(1){background:linear-gradient(145deg,#27230e,#111313);transform:translateY(-8px)}
+.podium-card:nth-child(2){background:linear-gradient(145deg,#1c2020,#111313)}
+.podium-card:nth-child(3){background:linear-gradient(145deg,#21180f,#111313)}
+.podium-rank{font-size:42px}
+.podium-score{font-size:30px;color:var(--lime)}
+.profile-grid{grid-template-columns:350px 1fr}
+.profile-card{padding:32px}
+.profile-card .avatar-big{width:150px;height:150px;border-radius:28px}
+.stats{gap:12px}
+.stat{padding:18px;border-radius:15px}
+.news-grid{grid-template-columns:1.4fr 1fr 1fr;grid-auto-rows:auto}
+.news-grid .card:first-child{grid-row:span 2}
+.news-grid .card:first-child .news-img{height:330px}
+.news-grid .card{padding:12px;overflow:hidden}
+.news-grid .card h3,.news-grid .card p,.news-grid .card .news-date{padding:0 8px}
+.news-grid .card h3{font-size:17px}
+.news-grid .card p{font-size:11px}
+.news-img{height:180px;display:block;margin-bottom:11px;border-radius:12px}
+.game-box{background:#0b0d0d;border-radius:18px;padding:16px}
+.game-toolbar{border:0;background:#111414;margin:0 0 10px;padding:13px 15px}
+.game-frame-wrap{border-radius:15px;min-height:520px}
+.auth-wrap{max-width:560px}
+.auth-card{border-radius:20px;padding:30px}
+.lang-switch{margin-left:8px}
+footer{padding:40px 20px;color:#464b4a}
+@media(max-width:850px){
+ .top{padding:0 12px}.logo{font-size:23px}.user-mini{min-width:auto}
+ .hero{min-height:620px}.cards,.news-grid{grid-template-columns:1fr}
+ .news-grid .card:first-child{grid-row:auto}.news-grid .card:first-child .news-img{height:220px}
+ .profile-grid{grid-template-columns:1fr}
+}
+
+/* CUBE RAGE V6 — player-first homepage */
+.mode-strip{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin:16px 0 0;
+}
+.mode-card{
+  position:relative;
+  min-height:150px;
+  padding:22px;
+  text-align:left;
+  border:1px solid #2b302f;
+  border-radius:18px;
+  background:#0c0f0f;
+  color:#f4f6f5;
+  cursor:pointer;
+  overflow:hidden;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease;
+}
+.mode-card:hover{
+  transform:translateY(-3px);
+  border-color:#555d59;
+  background:#101313;
+}
+.mode-card::after{
+  content:"";
+  position:absolute;
+  width:140px;height:140px;
+  right:-45px;bottom:-70px;
+  border-radius:50%;
+  opacity:.12;
+}
+.mode-card.easy::after{background:#b8db0d}
+.mode-card.medium::after{background:#ffbd39}
+.mode-card.hard::after{background:#ef5350}
+.mode-name{display:block;font-size:34px;font-weight:950;letter-spacing:-1px}
+.mode-meta{display:block;margin-top:5px;font-size:11px;letter-spacing:2px;color:#777e7b}
+.mode-card strong{display:block;margin-top:30px;font-size:12px;letter-spacing:1px}
+.mode-card.easy strong{color:#b8db0d}
+.mode-card.medium strong{color:#ffbd39}
+.mode-card.hard strong{color:#ef5350}
+
+/* Remove the old generic card rhythm on the home screen. */
+#view-home > .cards{display:none}
+
+/* More game-like headings */
+.heading p{color:#747b78}
+.rating-toolbar,.news-toolbar,.profile-toolbar{border-radius:16px}
+
+/* Mobile-first behavior */
+@media(max-width:760px){
+  .mode-strip{grid-template-columns:1fr}
+  .mode-card{min-height:125px}
+  .mode-card strong{margin-top:20px}
+  .hero h1{letter-spacing:-6px}
+  .hero{min-height:570px}
+}
+
+/* CUBE RAGE V7 — navigation + profile avatar */
+.logo-home{
+  border:0;
+  margin:0;
+  padding:0;
+  background:transparent;
+  color:#fff;
+  cursor:pointer;
+  font:inherit;
+  font-weight:1000;
+  letter-spacing:-2px;
+  text-align:left;
+}
+.logo-home b{color:var(--lime)}
+.logo-home:hover{filter:brightness(1.12)}
+.avatar-actions{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:16px;
+}
+.avatar-btn{
+  border-color:#3b423f;
+}
+.avatar-btn:hover{
+  border-color:var(--lime);
+  color:var(--lime);
+}
+.avatar-actions .btn{
+  min-width:145px;
+}
+.profile-card .avatar-big{
+  display:block;
+}
+@media(max-width:760px){
+  .avatar-actions .btn{min-width:0;flex:1}
+}
+
+/* ================================
+   CUBE RAGE V8 — FULL RESPONSIVE
+   ================================ */
+
+.mobile-menu-btn{
+  display:none;
+  width:42px;
+  height:42px;
+  border:1px solid #303633;
+  border-radius:12px;
+  background:#111514;
+  color:#fff;
+  cursor:pointer;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:5px;
+  flex:0 0 auto;
+}
+.mobile-menu-btn span{
+  display:block;
+  width:19px;
+  height:2px;
+  background:#fff;
+  border-radius:3px;
+}
+.mobile-nav{
+  display:none;
+}
+
+@media (max-width: 900px){
+  header{
+    padding:14px 18px !important;
+    min-height:66px;
+  }
+  header .logo-home{
+    font-size:20px !important;
+    letter-spacing:-1.4px;
+  }
+  header nav{
+    display:none !important;
+  }
+  .mobile-menu-btn{
+    display:flex;
+  }
+  .mobile-nav{
+    position:fixed;
+    z-index:9999;
+    top:74px;
+    left:12px;
+    right:12px;
+    display:none;
+    padding:10px;
+    background:rgba(12,14,14,.98);
+    border:1px solid #303633;
+    border-radius:16px;
+    box-shadow:0 18px 45px rgba(0,0,0,.55);
+  }
+  .mobile-nav.open{
+    display:grid;
+    gap:6px;
+  }
+  .mobile-nav button{
+    width:100%;
+    min-height:48px;
+    border:1px solid transparent;
+    border-radius:11px;
+    background:#151918;
+    color:#e9ecea;
+    text-align:left;
+    padding:0 15px;
+    font-weight:900;
+    cursor:pointer;
+  }
+  .mobile-nav button:hover,
+  .mobile-nav button.active{
+    background:#b8db0d;
+    color:#0b0d0c;
+  }
+
+  .page, main, .container{
+    width:auto !important;
+    max-width:none !important;
+    margin-left:14px !important;
+    margin-right:14px !important;
+  }
+
+  .hero{
+    min-height:unset !important;
+    padding:48px 24px !important;
+  }
+  .hero h1{
+    font-size:clamp(48px,14vw,92px) !important;
+    line-height:.82 !important;
+  }
+  .hero p{
+    max-width:100% !important;
+    font-size:16px !important;
+  }
+
+  .grid,
+  .cards,
+  .features,
+  .stats-grid,
+  .profile-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  .card,
+  .panel,
+  .section-card{
+    min-width:0 !important;
+  }
+
+  .rating-table{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  input, select, textarea, .search, .input{
+    width:100% !important;
+    box-sizing:border-box;
+  }
+
+  .actions, .hero-actions{
+    flex-wrap:wrap !important;
+  }
+
+  button, .btn{
+    min-height:44px;
+  }
+}
+
+@media (max-width: 560px){
+  body{
+    overflow-x:hidden;
+  }
+  header{
+    padding:12px 14px !important;
+  }
+  header > div{
+    gap:8px !important;
+  }
+  .header-right{
+    gap:7px !important;
+  }
+  .lang-switch{
+    transform:scale(.92);
+    transform-origin:right center;
+  }
+  .user-name{
+    display:none !important;
+  }
+  .user-avatar{
+    width:36px !important;
+    height:36px !important;
+  }
+
+  .hero{
+    padding:34px 18px !important;
+    border-radius:18px !important;
+  }
+
+  .hero h1{
+    font-size:54px !important;
+  }
+
+  .hero-actions{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+  }
+  .hero-actions .btn,
+  .hero-actions button{
+    width:100% !important;
+  }
+
+  .mode-card{
+    padding:20px !important;
+  }
+
+  .profile-card{
+    padding:20px !important;
+  }
+
+  .avatar-big{
+    width:96px !important;
+    height:96px !important;
+  }
+
+  table{
+    min-width:560px;
+  }
+
+  .rating-tabs{
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:repeat(3,1fr) !important;
+  }
+
+  .rating-tabs button{
+    min-width:0 !important;
+    padding:12px 6px !important;
+  }
+
+  .mobile-nav{
+    top:68px;
+  }
+}
+
+/* Don't let fixed desktop dimensions create horizontal overflow. */
+img, video, canvas, iframe{
+  max-width:100%;
+}
+
+/* CUBE RAGE V9 — stronger desktop branding */
+.logo.logo-home{
+  font-size:36px !important;
+  line-height:1 !important;
+  letter-spacing:-2.8px !important;
+  min-width:max-content;
+}
+@media (max-width:1200px){
+  .logo.logo-home{font-size:33px !important;}
+}
+@media (max-width:900px){
+  .logo.logo-home{font-size:29px !important;}
+}
+@media (max-width:560px){
+  .logo.logo-home{font-size:26px !important;}
+}
+</style>
+<style id="cube-rage-v15-fixes">
+.rating-lock{min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:36px 24px;background:#0d100f;border:1px solid #2b312e;border-radius:18px}
+.rating-lock-icon{width:58px;height:58px;display:grid;place-items:center;border-radius:15px;background:#171c19;border:1px solid #303733;font-size:25px;margin-bottom:16px}
+.rating-lock h3{margin:0 0 9px;font-weight:900;letter-spacing:.4px}
+.rating-lock p{max-width:500px;margin:0 0 22px;color:#9da39f;line-height:1.6}
+#gameFrame{width:100%;height:min(72vh,720px);min-height:520px;border:0;display:block;background:#000}
+@media(max-width:700px){#gameFrame{height:72vh;min-height:430px}}
+</style>
+
+<style id="cube-rage-social-v1">
+/* CUBE RAGE — social/community layer */
+.social-home{display:grid;grid-template-columns:230px minmax(0,1fr) 270px;gap:14px;margin-top:16px;align-items:start}
+.social-side{position:sticky;top:96px;display:grid;gap:12px}
+.social-panel{background:linear-gradient(145deg,#121515,#0c0f0f);border:1px solid #292e2c;border-radius:18px;padding:16px;box-shadow:0 14px 45px #0005}
+.social-panel h3{margin:0 0 12px;font-size:12px;letter-spacing:.8px}
+.social-panel p{margin:0;color:#7f8783;font-size:10px;line-height:1.55}
+.quick-list{display:grid;gap:5px}
+.quick-link{width:100%;border:0;background:transparent;color:#aeb4b1;border-radius:10px;padding:11px 10px;text-align:left;font-size:10px;font-weight:900;display:flex;align-items:center;gap:9px}
+.quick-link:hover,.quick-link.active{background:#1a1e1d;color:#fff}
+.quick-link .qicon{width:25px;height:25px;display:grid;place-items:center;border-radius:8px;background:#191d1c;color:var(--lime);font-size:12px}
+.community-feed{display:grid;gap:12px;min-width:0}
+.feed-card{background:linear-gradient(145deg,#131717,#0d1010);border:1px solid #292e2c;border-radius:19px;overflow:hidden;box-shadow:0 16px 55px #0005}
+.feed-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 17px 10px}
+.feed-author{display:flex;align-items:center;gap:10px}
+.feed-avatar{width:38px;height:38px;border-radius:11px;object-fit:cover;background:#252a28;border:1px solid #383e3b}
+.feed-author b{display:block;font-size:11px}
+.feed-author span{display:block;color:#686f6c;font-size:9px;margin-top:3px}
+.feed-body{padding:0 17px 16px}
+.feed-body h3{font-size:19px;letter-spacing:-.3px;margin:6px 0 8px}
+.feed-body p{font-size:11px;line-height:1.65;color:#969e9a;margin:0}
+.feed-cover{width:100%;height:260px;object-fit:cover;display:block}
+.feed-actions{display:flex;gap:5px;border-top:1px solid #252a28;padding:7px 10px}
+.feed-action{border:0;background:transparent;color:#747c78;border-radius:9px;padding:10px 12px;font-size:9px;font-weight:1000;flex:1}
+.feed-action:hover{background:#191d1c;color:#fff}
+.feed-action.liked{color:var(--lime);background:rgba(184,219,13,.08)}
+.mode-feed-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}
+.mode-feed{border:1px solid #303633;border-radius:13px;padding:14px;background:#0c0f0f;cursor:pointer;text-align:left}
+.mode-feed:hover{border-color:#59615c;transform:translateY(-2px)}
+.mode-feed b{display:block;font-size:15px}.mode-feed span{display:block;color:#68706c;font-size:8px;letter-spacing:1px;margin-top:5px}.mode-feed.easy b{color:#b8db0d}.mode-feed.medium b{color:#ffbd39}.mode-feed.hard b{color:#ef5350}
+.promo-box{padding:18px;background:linear-gradient(145deg,rgba(184,219,13,.12),rgba(184,219,13,.02));border:1px solid rgba(184,219,13,.22);border-radius:15px}
+.promo-box strong{display:block;font-size:14px;margin-bottom:6px}.promo-box p{margin-bottom:13px}
+.share-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
+.share-btn{border:1px solid #343a37;background:#171b1a;color:#fff;border-radius:10px;padding:10px 8px;font-size:9px;font-weight:1000}.share-btn:hover{border-color:#b8db0d;color:#b8db0d}
+.trust-list{display:grid;gap:9px}.trust-item{display:flex;gap:9px;align-items:flex-start}.trust-dot{width:8px;height:8px;border-radius:50%;background:var(--lime);margin-top:3px;flex:0 0 auto}.trust-item b{display:block;font-size:10px}.trust-item span{display:block;color:#69706d;font-size:8px;margin-top:2px;line-height:1.45}
+.feed-news-list{display:grid;gap:8px}.feed-news-item{display:grid;grid-template-columns:55px 1fr;gap:9px;align-items:center;cursor:pointer}.feed-news-item img{width:55px;height:45px;border-radius:8px;object-fit:cover;background:#202422}.feed-news-item b{font-size:9px;line-height:1.35}.feed-news-item span{display:block;color:#626a66;font-size:8px;margin-top:3px}
+.share-toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;z-index:200;background:#151918;border:1px solid #3b423e;color:#fff;border-radius:12px;padding:12px 16px;font-size:10px;font-weight:1000;transition:.22s ease;box-shadow:0 15px 50px #0009}.share-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:1050px){.social-home{grid-template-columns:190px minmax(0,1fr)}.social-side.right-side{display:none}}
+@media(max-width:760px){.social-home{display:block}.social-side{position:static;margin-bottom:12px}.social-side.left-side{display:none}.mode-feed-grid{grid-template-columns:1fr}.feed-cover{height:210px}.feed-head{padding:13px}.feed-body{padding:0 13px 14px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header class="top">
+ <button class="logo logo-home" id="logoHome" type="button" aria-label="CUBE RAGE HOME">CUBE <b>RAGE</b></button>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+ <nav class="nav" id="nav">
+  <button class="active" data-view="home" data-i18n="nav_home">HOME</button>
+  <button data-view="play" data-i18n="nav_play">PLAY</button>
+  <button data-view="rating" data-i18n="nav_rating">RATING</button>
+  <button data-view="news" data-i18n="nav_news">NEWS</button>
+  <button data-view="profile" id="profileNav" data-i18n="nav_profile">LOGIN / PROFILE</button>
+ </nav>
+ <div class="lang-switch">
+  <button id="langUA" class="lang active">UA</button>
+  <button id="langEN" class="lang">EN</button>
+ </div>
+ <button class="user-mini" id="userMini" data-view="profile">
+  <span id="userName">GUEST</span>
+  <img id="userAvatar" src="" alt="">
+ </button>
+</header>
+<nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+  <button data-page="home">HOME</button>
+  <button data-page="rating">RATING</button>
+  <button data-page="news">NEWS</button>
+  <button data-page="auth">LOGIN / REGISTER</button>
+</nav>
+
+
+<main>
+<section class="view active" id="view-home">
+ <div class="hero">
+  <div class="hero-copy">
+   <div class="kicker" data-i18n="official">CUBE RAGE / OFFICIAL</div>
+   <h1>CUBE<br><span>RAGE</span></h1>
+   <p data-i18n="hero_desc">Швидка гра, просте правило: грай, виживай і бий власний рекорд. Рейтинг доступний авторизованим гравцям. Увійди або зареєструйся, щоб переглядати результати.</p>
+   <div class="actions">
+    <button class="btn primary" data-view="play" data-i18n="play_now">PLAY NOW</button>
+    <button class="btn" data-view="rating" data-i18n="view_ranking">VIEW RANKING</button>
+   </div>
+  </div>
+ </div>
+ <div class="mode-strip">
+  <button class="mode-card easy" data-view="rating" data-mode="Easy">
+   <span class="mode-name">EASY</span>
+   <span class="mode-meta">TOP RECORDS</span>
+   <strong>VIEW RANKING →</strong>
+  </button>
+  <button class="mode-card medium" data-view="rating" data-mode="Medium">
+   <span class="mode-name">MEDIUM</span>
+   <span class="mode-meta">TOP RECORDS</span>
+   <strong>VIEW RANKING →</strong>
+  </button>
+  <button class="mode-card hard" data-view="rating" data-mode="Hard">
+   <span class="mode-name">HARD</span>
+   <span class="mode-meta">TOP RECORDS</span>
+   <strong>VIEW RANKING →</strong>
+  </button>
+ </div>
+
+  <div class="social-home">
+    <aside class="social-side left-side">
+      <div class="social-panel">
+        <h3>CUBE RAGE</h3>
+        <div class="quick-list">
+          <button class="quick-link active" data-view="home"><span class="qicon">⌂</span> HOME</button>
+          <button class="quick-link" data-view="play"><span class="qicon">▶</span> PLAY</button>
+          <button class="quick-link" data-view="rating"><span class="qicon">★</span> RANKING</button>
+          <button class="quick-link" data-view="news"><span class="qicon">▤</span> NEWS</button>
+          <button class="quick-link" data-view="profile"><span class="qicon">●</span> PROFILE</button>
+        </div>
+      </div>
+      <div class="social-panel">
+        <h3>DISCOVER</h3>
+        <div class="trust-list">
+          <div class="trust-item"><span class="trust-dot"></span><div><b>FAST ARCADE</b><span>Short sessions, instant restart.</span></div></div>
+          <div class="trust-item"><span class="trust-dot"></span><div><b>YOUR RECORD</b><span>Play for a better personal score.</span></div></div>
+          <div class="trust-item"><span class="trust-dot"></span><div><b>COMMUNITY</b><span>Share the game and challenge friends.</span></div></div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="community-feed">
+      <article class="feed-card">
+        <div class="feed-head">
+          <div class="feed-author">
+            <img class="feed-avatar" src="assets/hero.jpg" alt="CUBE RAGE">
+            <div><b>CUBE RAGE</b><span>OFFICIAL GAME PAGE · NOW</span></div>
+          </div>
+          <span class="kicker" style="margin:0;font-size:8px">OFFICIAL</span>
+        </div>
+        <img class="feed-cover" src="assets/hero.jpg" alt="CUBE RAGE">
+        <div class="feed-body">
+          <h3>PLAY. SURVIVE. BEAT YOUR RECORD.</h3>
+          <p>Jump into CUBE RAGE, choose your difficulty and try to push your score higher. Share the game with a friend and see who lasts longer.</p>
+          <div class="mode-feed-grid">
+            <button class="mode-feed easy" data-view="rating" data-mode="Easy"><b>EASY</b><span>STARTER RUN</span></button>
+            <button class="mode-feed medium" data-view="rating" data-mode="Medium"><b>MEDIUM</b><span>MORE PRESSURE</span></button>
+            <button class="mode-feed hard" data-view="rating" data-mode="Hard"><b>HARD</b><span>FULL RAGE</span></button>
+          </div>
+        </div>
+        <div class="feed-actions">
+          <button class="feed-action" data-like="official">♡ LIKE <span data-like-count="official">0</span></button>
+          <button class="feed-action" data-share>↗ SHARE</button>
+          <button class="feed-action" data-view="play">▶ PLAY</button>
+        </div>
+      </article>
+
+      <article class="feed-card promo-box">
+        <strong>GROW THE CUBE RAGE COMMUNITY</strong>
+        <p>One click is enough to share the game. Send CUBE RAGE to a friend, post it on social media or copy the page link.</p>
+        <div class="share-row">
+          <button class="share-btn" id="shareSite">↗ SHARE CUBE RAGE</button>
+          <button class="share-btn" id="copySiteLink">▣ COPY LINK</button>
+        </div>
+      </article>
+
+      <div id="socialNewsFeed"></div>
+    </div>
+
+    <aside class="social-side right-side">
+      <div class="social-panel promo-box">
+        <h3>INVITE FRIENDS</h3>
+        <p>Challenge someone to beat your CUBE RAGE record.</p>
+        <div class="share-row">
+          <button class="share-btn" id="rightShare">SHARE</button>
+          <button class="share-btn" id="rightCopy">COPY LINK</button>
+        </div>
+      </div>
+      <div class="social-panel">
+        <h3>LATEST NEWS</h3>
+        <div class="feed-news-list" id="miniNewsFeed">
+          <div style="color:#666;font-size:9px">Loading…</div>
+        </div>
+      </div>
+      <div class="social-panel">
+        <h3>YOUR NEXT STEP</h3>
+        <div class="quick-list">
+          <button class="quick-link" data-view="play"><span class="qicon">▶</span> PLAY THE GAME</button>
+          <button class="quick-link" data-view="rating"><span class="qicon">★</span> CHECK RANKING</button>
+          <button class="quick-link" data-view="profile"><span class="qicon">●</span> CREATE PROFILE</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+</section>
+
+<section class="view" id="view-play">
+ <div class="heading"><div><h2 data-i18n="play_title">PLAY</h2><p>Запусти CUBE RAGE.</p></div></div>
+ <div class="game-box">
+  <div class="game-toolbar">
+   <div>
+    <b>PLAY CUBE RAGE</b>
+    <span id="gameStatus">HTML5 BUILD NOT INSTALLED — ITCH.IO FALLBACK</span>
+   </div>
+   <div class="actions">
+    <button class="btn primary" id="launchEmbedded">PLAY HERE</button>
+    <button class="btn" id="launchGame">OPEN ITCH.IO</button>
+   </div>
+  </div>
+  <div class="game-frame-wrap" id="gameFrameWrap">
+   <div class="big-play">
+    <div>
+     <div class="kicker">CUBE RAGE / WEB BUILD</div>
+     <h2>READY?</h2>
+     <p>Поклади HTML5-білд гри в <b>game/</b> поруч із index.html — і вона запускатиметься прямо тут.</p>
+     <button class="btn primary" id="installHint">HOW TO INSTALL</button>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="view" id="view-rating">
+ <div class="heading"><div><h2 data-i18n="rating_title">RATING</h2><p>Увійди або зареєструйся, щоб переглядати рейтинг.</p></div><button class="btn" id="refreshRating" data-i18n="refresh">REFRESH</button></div>
+ <div class="tabs">
+  <button class="tab easy active" data-mode="Easy">EASY</button>
+  <button class="tab medium" data-mode="Medium">MEDIUM</button>
+  <button class="tab hard" data-mode="Hard">HARD</button>
+ </div>
+ <input class="search" id="ratingSearch" placeholder="Search player...">
+ <div id="ratingBox" class="table-wrap"><div class="loading">LOADING...</div></div>
+</section>
+
+<section class="view" id="view-news">
+ <div class="heading"><div><h2 data-i18n="news_title">NEWS</h2><p>Новини завантажуються з GitHub.</p></div><button class="btn" id="refreshNews" data-i18n="refresh">REFRESH</button></div>
+ <div id="newsBox" class="news-grid"></div>
+</section>
+
+<section class="view" id="view-profile">
+ <div id="authBox" class="auth-wrap">
+  <div class="card auth-card">
+   <div class="auth-tabs">
+    <button class="btn primary" id="loginTab" data-i18n="login">LOGIN</button>
+    <button class="btn" id="registerTab" data-i18n="register">REGISTER</button>
+   </div>
+   <form id="authForm">
+    <div id="nickField" class="hidden"><label data-i18n="nickname">NICKNAME</label><input id="nickname" maxlength="20"></div>
+    <label data-i18n="email">EMAIL</label><input id="email" type="email" required autocomplete="email">
+    <label data-i18n="password">PASSWORD</label><input id="password" type="password" minlength="6" required autocomplete="current-password">
+    <div class="actions"><button class="btn primary" id="authSubmit" type="submit">LOGIN</button></div>
+    <div id="authMessage" class="message"></div>
+   </form>
+  </div>
+ </div>
+ <div id="profileBox" class="hidden"></div>
+</section>
+</main>
+<footer>CUBE RAGE © 2026</footer>
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+const CONFIG={
+ apiKey:"AIzaSyBgT8gsee4WjcuWiW_JMA6ayJgawt-Dqwg",
+ database:"https://cube-rage-default-rtdb.firebaseio.com",
+ auth:"https://identitytoolkit.googleapis.com/v1",
+ game:"https://mykola-kolisnyk.itch.io/cube-rage",
+ news:"https://raw.githubusercontent.com/Cube-Rage/news/main/news.json"
+};
+let session=JSON.parse(localStorage.getItem("cubeRageSession")||"null");
+let cachedProfile=JSON.parse(localStorage.getItem("cubeRageProfile")||"null");
+let mode="Easy", players=[], authMode="login";
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+const n=v=>Number.isFinite(Number(v))?Number(v):0;
+const avatar=d=>typeof d?.Avatar==="string"&&d.Avatar?d.Avatar:"";
+function toast(msg,bad=false){const t=$("toast");t.textContent=msg;t.className="toast show "+(bad?"bad":"ok");clearTimeout(window._toast);window._toast=setTimeout(()=>t.className="toast",2800)}
+function requireRatingAccess(){
+ if(session && session.uid) return true;
+ const box=$("ratingBox");
+ if(box){
+  box.innerHTML=`<div class="rating-lock">
+   <div class="rating-lock-icon">🔒</div>
+   <h3>${lang==="ua"?"УВІЙДИ АБО ЗАРЕЄСТРУЙСЯ":"LOGIN OR REGISTER"}</h3>
+   <p>${lang==="ua"?"Щоб переглядати рейтинг CUBE RAGE, спочатку увійди в акаунт або зареєструйся.":"Sign in or register to view the CUBE RAGE ranking."}</p>
+   <button class="btn primary" id="ratingLoginBtn">${lang==="ua"?"УВІЙТИ / ЗАРЕЄСТРУВАТИСЯ":"LOGIN / REGISTER"}</button>
+  </div>`;
+  $("ratingLoginBtn").onclick=()=>show("profile");
+ }
+ toast(lang==="ua"?"УВІЙДИ АБО ЗАРЕЄСТРУЙСЯ, ЩОБ ПЕРЕГЛЯНУТИ РЕЙТИНГ":"LOGIN OR REGISTER TO VIEW THE RANKING",true);
+ return false;
+}
+function show(view){
+ if(view==="rating" && !requireRatingAccess()) return;
+ document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
+ const el=$("view-"+view); if(!el)return;
+ el.classList.add("active");
+ document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view===view));
+ if(view==="rating")loadRating(); if(view==="news")loadNews(); if(view==="profile")loadProfile();
+ scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.view)));
+const logoHome=$("logoHome"); if(logoHome){ logoHome.addEventListener("click",()=>show("home")); logoHome.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();show("home")}}); }
+const GAME_BUILD="./game/index.html";
+function tryEmbeddedGame(){
+ const wrap=$("gameFrameWrap"),status=$("gameStatus");
+ wrap.innerHTML='<iframe id="gameFrame" src="'+GAME_BUILD+'" allow="fullscreen; autoplay; gamepad; clipboard-read; clipboard-write" allowfullscreen></iframe>';
+ status.textContent=lang==="ua"?"CUBE RAGE ЗАПУЩЕНО НА САЙТІ":"CUBE RAGE IS RUNNING ON THE SITE";
+ toast(lang==="ua"?"ГРУ ЗАПУЩЕНО":"GAME STARTED");
+}
+$("launchEmbedded").onclick=tryEmbeddedGame;
+$("installHint").onclick=()=>toast(lang==="ua"?"Гра знаходиться в папці game/ поруч із сайтом.":"The game is in the game/ folder next to the website.",false);
+$("launchGame").onclick=()=>window.open(CONFIG.game,"_blank","noopener");
+document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{if(!requireRatingAccess())return;mode=b.dataset.mode;document.querySelectorAll("[data-mode]").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderRating()});
+$("ratingSearch").oninput=renderRating;
+$("refreshRating").onclick=loadRating;
+$("refreshNews").onclick=loadNews;
+
+function setAuthMode(x){
+ authMode=x;
+ $("loginTab").classList.toggle("primary",x==="login");
+ $("registerTab").classList.toggle("primary",x==="register");
+ $("nickField").classList.toggle("hidden",x==="login");
+ $("authSubmit").textContent=x==="login"?"LOGIN":"REGISTER";
+ $("authMessage").textContent="";
+ $("password").autocomplete=x==="login"?"current-password":"new-password";
+}
+$("loginTab").onclick=()=>setAuthMode("login");
+$("registerTab").onclick=()=>setAuthMode("register");
+
+async function authRequest(endpoint,body){
+ const r=await fetch(CONFIG.auth+"/"+endpoint+"?key="+encodeURIComponent(CONFIG.apiKey),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+ const d=await r.json(); if(!r.ok)throw new Error(d?.error?.message||"AUTH_ERROR"); return d;
+}
+async function db(path,opts={}){
+ const url=CONFIG.database+"/"+path+".json"+(session?.idToken?("?auth="+encodeURIComponent(session.idToken)):"");
+ const r=await fetch(url,{...opts,headers:{"Content-Type":"application/json",...(opts.headers||{})}});
+ const d=await r.json(); if(!r.ok)throw new Error(d?.error||"DATABASE_ERROR"); return d;
+}
+function authError(e){
+ const m=String(e.message||e);
+ const map={
+ "EMAIL_EXISTS":"Цей email вже зареєстрований.",
+ "INVALID_LOGIN_CREDENTIALS":"Невірний email або пароль.",
+ "INVALID_EMAIL":"Невірний email.",
+ "WEAK_PASSWORD":"Пароль має містити щонайменше 6 символів.",
+ "EMAIL_NOT_FOUND":"Невірний email або пароль.",
+ "INVALID_PASSWORD":"Невірний email або пароль.",
+ "OPERATION_NOT_ALLOWED":"У Firebase не увімкнено Email/Password.",
+ "TOO_MANY_ATTEMPTS_TRY_LATER":"Забагато спроб. Спробуй пізніше."
+ };
+ return map[m]||m;
+}
+async function login(email,password){
+ const d=await authRequest("accounts:signInWithPassword",{email,password,returnSecureToken:true});
+ session={idToken:d.idToken,refreshToken:d.refreshToken,uid:d.localId,email:d.email};
+ localStorage.setItem("cubeRageSession",JSON.stringify(session));
+}
+async function register(nickname,email,password){
+ const d=await authRequest("accounts:signUp",{email,password,returnSecureToken:true});
+ session={idToken:d.idToken,refreshToken:d.refreshToken,uid:d.localId,email:d.email};
+ localStorage.setItem("cubeRageSession",JSON.stringify(session));
+ await db("Players/"+encodeURIComponent(session.uid),{method:"PUT",body:JSON.stringify({
+  AccountID:session.uid,Nickname:nickname,Email:email,Avatar:"",
+  Coins:0,Level:1,Points_Progress:0,Progress:0,Games_Played:0,
+  Record_Easy:0,Record_Medium:0,Record_Hard:0
+ })});
+}
+$("authForm").onsubmit=async e=>{
+ e.preventDefault(); const msg=$("authMessage");msg.textContent="ПІДКЛЮЧЕННЯ...";
+ try{
+  const email=$("email").value.trim(),password=$("password").value,nick=$("nickname").value.trim();
+  if(authMode==="register"){if(!nick)throw new Error("Вкажи nickname");await register(nick,email,password);toast("АКАУНТ СТВОРЕНО")}
+  else{await login(email,password);toast("УСПІШНИЙ ВХІД")}
+  msg.textContent="";updateHeader();await loadProfile();show("profile");
+ }catch(e){msg.textContent=authError(e);toast(authError(e),true)}
+};
+async function logout(){localStorage.removeItem("cubeRageSession");localStorage.removeItem("cubeRageProfile");session=null;cachedProfile=null;updateHeader();$("profileBox").classList.add("hidden");$("authBox").classList.remove("hidden");toast("ВИХІД ВИКОНАНО");show("home")}
+function updateHeader(){
+ const logged=!!session;
+ const profile=cachedProfile||{};
+ const name=profile.Nickname||profile.nickname||(logged?(session.email||"PLAYER").split("@")[0]:"GUEST");
+ const av=avatar(profile);
+ $("userName").textContent=name;
+ $("profileNav").textContent=logged?(lang==="ua"?"ПРОФІЛЬ":"PROFILE"):(lang==="ua"?"УВІЙТИ":"LOGIN");
+ if(av){$("userAvatar").src=av;$("userAvatar").classList.remove("hidden")}
+ else{$("userAvatar").removeAttribute("src");$("userAvatar").classList.add("hidden")}
+}
+function compressAvatar(file){
+ return new Promise((resolve,reject)=>{
+  if(file.size>10*1024*1024){reject(new Error("IMAGE_TOO_LARGE"));return}
+  const reader=new FileReader();
+  reader.onerror=()=>reject(new Error("IMAGE_READ_ERROR"));
+  reader.onload=()=>{
+   const img=new Image();
+   img.onerror=()=>reject(new Error("IMAGE_DECODE_ERROR"));
+   img.onload=()=>{
+    const s=256,r=72;
+    const c=document.createElement("canvas");
+    c.width=s;c.height=s;
+    const x=c.getContext("2d");
+    x.imageSmoothingEnabled=true;
+    x.imageSmoothingQuality="high";
+
+    x.beginPath();
+    x.moveTo(r,0);
+    x.lineTo(s-r,0);
+    x.quadraticCurveTo(s,0,s,r);
+    x.lineTo(s,s-r);
+    x.quadraticCurveTo(s,s,s-r,s);
+    x.lineTo(r,s);
+    x.quadraticCurveTo(0,s,0,s-r);
+    x.lineTo(0,r);
+    x.quadraticCurveTo(0,0,r,0);
+    x.closePath();
+    x.clip();
+
+    const m=Math.min(img.naturalWidth,img.naturalHeight);
+    const sx=(img.naturalWidth-m)/2;
+    const sy=(img.naturalHeight-m)/2;
+
+    x.drawImage(img,sx,sy,m,m,0,0,s,s);
+    resolve(c.toDataURL("image/jpeg",0.95));
+   };
+   img.src=reader.result;
+  };
+  reader.readAsDataURL(file);
+ });
+}
+
+async function loadProfile(){
+ if(!session){$("authBox").classList.remove("hidden");$("profileBox").classList.add("hidden");return}
+ $("authBox").classList.add("hidden");$("profileBox").classList.remove("hidden");$("profileBox").innerHTML='<div class="card loading">LOADING PROFILE...</div>';
+ try{
+  const d=await db("Players/"+encodeURIComponent(session.uid))||{};
+  cachedProfile=d;
+  localStorage.setItem("cubeRageProfile",JSON.stringify(d));
+  const av=avatar(d),nick=d.Nickname||session.email.split("@")[0];
+  $("userName").textContent=nick;
+  if(av){$("userAvatar").src=av;$("userAvatar").classList.remove("hidden")}
+  $("profileBox").innerHTML=`
+   <div class="profile-grid">
+    <div class="card profile-card">
+      ${av?`<img class="avatar-big" id="profileAvatar" src="${esc(av)}" alt="">`:`<div class="avatar-big" id="profileAvatar"></div>`}
+      <h3>${esc(nick)}</h3><p>${esc(d.Email||session.email)}</p>
+      <div class="avatar-actions">
+       <input id="avatarFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+       <button class="btn avatar-btn" id="changeAvatar" type="button">${lang==="ua"?"ЗМІНИТИ АВАТАР":"CHANGE AVATAR"}</button>
+       <button class="btn red" id="logout" type="button">LOG OUT</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>STATISTICS</h3>
+      <div class="stats">
+       ${stat(lang==="ua"?"РІВЕНЬ":"LEVEL",d.Level)}${stat(lang==="ua"?"МОНЕТИ":"COINS",d.Coins)}${stat(lang==="ua"?"ІГР ЗІГРАНО":"GAMES PLAYED",d.Games_Played)}
+       ${stat(lang==="ua"?"РЕКОРД EASY":"EASY RECORD",d.Record_Easy)}${stat(lang==="ua"?"РЕКОРД MEDIUM":"MEDIUM RECORD",d.Record_Medium)}${stat(lang==="ua"?"РЕКОРД HARD":"HARD RECORD",d.Record_Hard)}
+      </div>
+    </div>
+   </div>`;
+  $("logout").onclick=logout;
+
+  const avatarFile=$("avatarFile"), changeAvatar=$("changeAvatar");
+  changeAvatar.onclick=()=>avatarFile.click();
+
+  avatarFile.onchange=async()=>{
+    const file=avatarFile.files?.[0];
+    if(!file)return;
+    if(!/^image\//.test(file.type)){
+      toast(lang==="ua"?"ОБЕРИ ЗОБРАЖЕННЯ":"SELECT AN IMAGE",true);
+      return;
+    }
+    try{
+      changeAvatar.disabled=true;
+      changeAvatar.textContent=lang==="ua"?"ЗАВАНТАЖЕННЯ...":"UPLOADING...";
+      const dataUrl=await compressAvatar(file);
+      await db("Players/"+encodeURIComponent(session.uid)+"/Avatar",{
+        method:"PUT",
+        body:JSON.stringify(dataUrl)
+      });
+      cachedProfile={...d,Avatar:dataUrl};
+      localStorage.setItem("cubeRageProfile",JSON.stringify(cachedProfile));
+      $("profileAvatar").outerHTML=`<img class="avatar-big" id="profileAvatar" src="${esc(dataUrl)}" alt="">`;
+      $("userAvatar").src=dataUrl;
+      $("userAvatar").classList.remove("hidden");
+      toast(lang==="ua"?"АВАТАР ОНОВЛЕНО":"AVATAR UPDATED");
+    }catch(e){
+      toast((lang==="ua"?"НЕ ВДАЛОСЯ ЗМІНИТИ АВАТАР: ":"AVATAR UPDATE FAILED: ")+e.message,true);
+    }finally{
+      changeAvatar.disabled=false;
+      changeAvatar.textContent=lang==="ua"?"ЗМІНИТИ АВАТАР":"CHANGE AVATAR";
+      avatarFile.value="";
+    }
+  };
+ }catch(e){
+  $("profileBox").innerHTML=`<div class="card loading err">${esc(e.message)}<br><br>Перевір Firebase Database Rules.</div>`;
+ }
+}
+function stat(k,v){return `<div class="stat"><span>${k}</span><b>${n(v)}</b></div>`}
+
+async function loadRating(){
+ if(!requireRatingAccess()) return;
+ $("ratingBox").innerHTML='<div class="loading">LOADING RATING...</div>';
+ try{
+  const data=await db("Players")||{};
+  players=Object.entries(data).filter(([,d])=>d&&typeof d==="object").map(([uid,d])=>({uid,...d}));
+  renderRating();
+ }catch(e){
+  $("ratingBox").innerHTML=`<div class="loading err"><b>RATING ERROR</b><br><br>${esc(e.message)}<br><br>Firebase Rules мають дозволяти public read для Players.</div>`;
+ }
+}
+function renderRating(){
+ const field=mode==="Easy"?"Record_Easy":mode==="Medium"?"Record_Medium":"Record_Hard";
+ const q=$("ratingSearch").value.trim().toLowerCase();
+ const sorted=players.slice().sort((a,b)=>n(b[field])-n(a[field])||String(a.Nickname||"").localeCompare(String(b.Nickname||"")));
+ const rows=sorted.filter(d=>String(d.Nickname||"PLAYER").toLowerCase().includes(q)).slice(0,100);
+ if(!rows.length){$("ratingBox").innerHTML='<div class="empty">NO PLAYERS</div>';return}
+ $("ratingBox").innerHTML=`<table><thead><tr><th>#</th><th>PLAYER</th><th>LEVEL</th><th>${mode.toUpperCase()} RECORD</th></tr></thead><tbody>${rows.map((d,i)=>{
+  const rank=sorted.indexOf(d)+1,av=avatar(d),me=session&&d.uid===session.uid;
+  return `<tr class="${me?"me":""}"><td><b>${rank}</b></td><td><div class="player">${av?`<img src="${esc(av)}" alt="">`:`<img src="" alt="">`}<span>${esc(d.Nickname||"PLAYER")}</span></div></td><td>${n(d.Level)}</td><td class="score">${n(d[field])}</td></tr>`;
+ }).join("")}</tbody></table>`;
+}
+
+async function loadNews(){
+ const box=$("newsBox");box.innerHTML='<div class="card loading">LOADING NEWS...</div>';
+ try{
+  const r=await fetch(CONFIG.news+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("NEWS_HTTP_"+r.status);
+  const raw=await r.json(),items=Array.isArray(raw)?raw:(Array.isArray(raw.news)?raw.news:Object.values(raw||{}));
+  if(!items.length)throw new Error("NO_NEWS");
+  renderMiniNews(items);
+  renderSocialNews(items);
+  box.innerHTML=items.slice(0,12).map((x,i)=>{
+ const title=x.title||x.name||"CUBE RAGE";
+ const text=x.text||x.description||x.content||"";
+ const image=x.image||x.imageUrl||x.cover||"";
+ const date=x.date||x.published||"";
+ return `<article class="card news-card ${i===0?"featured":""}">
+   ${image?`<img class="news-img" src="${esc(image)}" alt="">`:""}
+   <div class="news-date">${esc(date)}</div>
+   <h3>${esc(title)}</h3>
+   <p>${esc(text)}</p>
+ </article>`;
+}).join("");
+ }catch(e){box.innerHTML='<div class="card loading">NEWS ЩЕ НЕ НАЛАШТОВАНІ.<br><br>Зміни CONFIG.news на свій GitHub raw news.json.</div>';renderMiniNews([])}
+}
+
+const I18N={
+ ua:{
+  nav_home:"ГОЛОВНА",nav_play:"ГРАТИ",nav_rating:"РЕЙТИНГ",nav_news:"НОВИНИ",nav_profile:"УВІЙТИ / ПРОФІЛЬ",
+  official:"CUBE RAGE / ОФІЦІЙНИЙ САЙТ",
+  hero_desc:"Швидка аркадна гра: грай, виживай і бий власні рекорди. Рейтинг доступний авторизованим гравцям. Увійди або зареєструйся, щоб переглядати результати.",
+  play_now:"ГРАТИ",view_ranking:"ПЕРЕГЛЯНУТИ РЕЙТИНГ",public_ranking:"ВІДКРИТИЙ РЕЙТИНГ",your_profile:"ТВІЙ ПРОФІЛЬ",no_p2w:"БЕЗ PAY-TO-WIN",
+  play_title:"ГРАТИ",rating_title:"РЕЙТИНГ",news_title:"НОВИНИ",refresh:"ОНОВИТИ",login:"УВІЙТИ",register:"РЕЄСТРАЦІЯ",
+  email:"EMAIL",password:"ПАРОЛЬ",nickname:"НІКНЕЙМ"
+ },
+ en:{
+  nav_home:"HOME",nav_play:"PLAY",nav_rating:"RANKING",nav_news:"NEWS",nav_profile:"LOGIN / PROFILE",
+  official:"CUBE RAGE / OFFICIAL WEBSITE",
+  hero_desc:"A fast arcade game: play, survive and beat your own records. The ranking is public, while an account is only needed for your profile and personal statistics.",
+  play_now:"PLAY NOW",view_ranking:"VIEW RANKING",public_ranking:"PUBLIC RANKING",your_profile:"YOUR PROFILE",no_p2w:"NO PAY-TO-WIN",
+  play_title:"PLAY",rating_title:"RANKING",news_title:"NEWS",refresh:"REFRESH",login:"LOGIN",register:"REGISTER",
+  email:"EMAIL",password:"PASSWORD",nickname:"NICKNAME"
+ }
+};
+let lang=localStorage.getItem("cubeRageLang")||"ua";
+function applyLang(){
+ const d=I18N[lang];
+ document.querySelectorAll("[data-i18n]").forEach(el=>{if(d[el.dataset.i18n])el.textContent=d[el.dataset.i18n]});
+ $("langUA").classList.toggle("active",lang==="ua");
+ $("langEN").classList.toggle("active",lang==="en");
+ document.documentElement.lang=lang==="ua"?"uk":"en";
+ $("authSubmit").textContent=authMode==="login"?(lang==="ua"?"УВІЙТИ":"LOGIN"):(lang==="ua"?"ЗАРЕЄСТРУВАТИСЯ":"REGISTER");
+ $("userName").textContent=(cachedProfile?.Nickname||cachedProfile?.nickname||(session?.email||"GUEST").split("@")[0]);
+}
+function setLang(x){lang=x;localStorage.setItem("cubeRageLang",x);applyLang();updateHeader()}
+$("langUA").onclick=()=>setLang("ua");
+$("langEN").onclick=()=>setLang("en");
+applyLang();
+
+setAuthMode("login");updateHeader();loadNews();
+
+const mobileMenuBtn=document.getElementById("mobileMenuBtn");
+const mobileNav=document.getElementById("mobileNav");
+if(mobileMenuBtn&&mobileNav){
+  mobileMenuBtn.addEventListener("click",()=>{
+    const open=mobileNav.classList.toggle("open");
+    mobileMenuBtn.setAttribute("aria-expanded",open?"true":"false");
+  });
+  mobileNav.querySelectorAll("[data-page]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      if(typeof show==="function") show(btn.dataset.page==="auth"?"profile":btn.dataset.page);
+      mobileNav.classList.remove("open");
+      mobileMenuBtn.setAttribute("aria-expanded","false");
+    });
+  });
+}
+window.addEventListener("resize",()=>{
+  if(window.innerWidth>900 && mobileNav){
+    mobileNav.classList.remove("open");
+    mobileMenuBtn?.setAttribute("aria-expanded","false");
+  }
+});
+
+
+/* CUBE RAGE social layer */
+function socialToast(message){
+  let el=document.getElementById("socialToast");
+  if(!el){el=document.createElement("div");el.id="socialToast";el.className="share-toast";document.body.appendChild(el)}
+  el.textContent=message;el.classList.add("show");clearTimeout(window._socialToast);window._socialToast=setTimeout(()=>el.classList.remove("show"),2200);
+}
+async function shareCubeRage(){
+  const shareData={title:"CUBE RAGE",text:"Play CUBE RAGE — beat your record and challenge your friends!",url:window.location.href};
+  try{
+    if(navigator.share){await navigator.share(shareData);socialToast(lang==="ua"?"ПОСИЛАННЯ ВІДКРИТО ДЛЯ ПОШИРЕННЯ":"SHARE SHEET OPENED");}
+    else{await navigator.clipboard.writeText(window.location.href);socialToast(lang==="ua"?"ПОСИЛАННЯ СКОПІЙОВАНО":"LINK COPIED");}
+  }catch(e){if(e?.name!=="AbortError")socialToast(lang==="ua"?"НЕ ВДАЛОСЯ ПОШИРИТИ":"SHARING FAILED")}
+}
+async function copyCubeRageLink(){
+ try{await navigator.clipboard.writeText(window.location.href);socialToast(lang==="ua"?"ПОСИЛАННЯ СКОПІЙОВАНО":"LINK COPIED");}
+ catch(e){socialToast(lang==="ua"?"СКОПІЮЙ ПОСИЛАННЯ З АДРЕСНОГО РЯДКА":"COPY THE URL FROM THE ADDRESS BAR")}
+}
+function setupSocialActions(){
+ document.querySelectorAll("[data-share]").forEach(b=>b.onclick=shareCubeRage);
+ document.querySelectorAll("[data-like]").forEach(b=>{
+  const key="cubeRageLike_"+b.dataset.like;
+  const count=document.querySelector(`[data-like-count="${b.dataset.like}"]`);
+  let liked=localStorage.getItem(key)==="1";
+  if(liked){b.classList.add("liked");if(count)count.textContent="1"}
+  b.onclick=()=>{liked=!liked;localStorage.setItem(key,liked?"1":"0");b.classList.toggle("liked",liked);if(count)count.textContent=liked?"1":"0"};
+ });
+ ["shareSite","rightShare"].forEach(id=>{const b=document.getElementById(id);if(b)b.onclick=shareCubeRage});
+ ["copySiteLink","rightCopy"].forEach(id=>{const b=document.getElementById(id);if(b)b.onclick=copyCubeRageLink});
+}
+function renderMiniNews(items){
+ const box=document.getElementById("miniNewsFeed");if(!box)return;
+ if(!items?.length){box.innerHTML='<div style="color:#666;font-size:9px">No news yet.</div>';return}
+ box.innerHTML=items.slice(0,4).map(x=>{
+  const title=esc(x.title||x.name||"CUBE RAGE");const image=esc(x.image||x.imageUrl||x.cover||"assets/hero.jpg");const date=esc(x.date||x.published||"");
+  return `<div class="feed-news-item" data-news-go><img src="${image}" alt=""><div><b>${title}</b><span>${date}</span></div></div>`;
+ }).join("");
+ box.querySelectorAll("[data-news-go]").forEach(x=>x.onclick=()=>show("news"));
+}
+function renderSocialNews(items){
+ const box=document.getElementById("socialNewsFeed");if(!box||!items?.length)return;
+ const x=items[0]||{};const title=esc(x.title||x.name||"CUBE RAGE NEWS");const text=esc(x.text||x.description||x.content||"");const image=esc(x.image||x.imageUrl||x.cover||"assets/hero.jpg");const date=esc(x.date||x.published||"");
+ box.innerHTML=`<article class="feed-card"><div class="feed-head"><div class="feed-author"><img class="feed-avatar" src="${image}" alt=""><div><b>CUBE RAGE NEWS</b><span>${date||"LATEST UPDATE"}</span></div></div></div><div class="feed-body"><h3>${title}</h3><p>${text}</p></div><div class="feed-actions"><button class="feed-action" data-view="news">▤ READ NEWS</button><button class="feed-action" data-share>↗ SHARE</button></div></article>`;
+ box.querySelectorAll("[data-share]").forEach(b=>b.onclick=shareCubeRage);box.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>show(b.dataset.view));
+}
+setupSocialActions();
+
+</script>
+</body>
+</html>
