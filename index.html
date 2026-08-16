@@ -1,0 +1,1545 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta name="description" content="CUBE RAGE — fast arcade game. Play, beat records, climb the ranking and join the community.">
+<meta name="theme-color" content="#080909">
+<meta property="og:title" content="CUBE RAGE — Play. Survive. Rage.">
+<meta property="og:description" content="Play CUBE RAGE, beat records, follow the latest news and share the game with friends.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/hero.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CUBE RAGE — Play. Survive. Rage.">
+<meta name="twitter:description" content="Play CUBE RAGE, chase records, follow updates and challenge your friends.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="keywords" content="CUBE RAGE, arcade game, browser game, HTML5 game, online game, arcade, leaderboard">
+<meta property="og:site_name" content="CUBE RAGE">
+<meta property="og:locale" content="uk_UA">
+<script type="application/ld+json">{
+  "@context":"https://schema.org",
+  "@type":"VideoGame",
+  "name":"CUBE RAGE",
+  "description":"A fast arcade browser game where players survive, chase records and compete on the leaderboard.",
+  "genre":["Arcade","Action"],
+  "gamePlatform":["Web Browser"],
+  "applicationCategory":"Game",
+  "image":"assets/hero.jpg",
+  "inLanguage":["uk","en"]
+}</script>
+<title>CUBE RAGE</title>
+<style>
+:root{
+ --lime:#B8DB0D;--lime2:#d5f43a;--bg:#080909;--panel:#111313;--panel2:#171a1a;
+ --line:#2a2d2d;--muted:#8d9292;--white:#f7f7f5;--orange:#ffb52e;--red:#e84949;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--white);font-family:Arial,Helvetica,sans-serif}
+body{min-height:100vh}
+button,input{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+a{color:inherit}
+.hidden{display:none!important}
+#app{min-height:100vh}
+.top{
+ position:sticky;top:0;z-index:50;height:72px;padding:0 28px;
+ display:flex;align-items:center;gap:28px;background:rgba(8,9,9,.92);
+ border-bottom:1px solid #222;backdrop-filter:blur(14px)
+}
+.logo{font-size:25px;font-weight:1000;letter-spacing:-1.5px;white-space:nowrap}
+.logo b{color:var(--lime)}
+.nav{display:flex;gap:3px;flex:1}
+.nav button{border:0;background:transparent;color:#747979;padding:12px 14px;border-radius:9px;font-size:11px;font-weight:1000}
+.nav button:hover,.nav button.active{background:#191c1c;color:#fff}
+.user-mini{display:flex;align-items:center;gap:9px;border:0;background:transparent;color:#fff;font-size:11px;font-weight:1000}
+.user-mini img,.avatar{width:40px;height:40px;border-radius:11px;object-fit:cover;background:#252828;border:1px solid #3a3e3e}
+main{max-width:1240px;margin:auto;padding:24px 22px 70px}
+.view{display:none}.view.active{display:block}
+.hero{
+ min-height:650px;border:1px solid #2b2e2e;border-radius:24px;overflow:hidden;position:relative;
+ display:flex;align-items:flex-end;padding:52px;
+ background:
+ linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.62) 42%,rgba(0,0,0,.15) 100%),
+ linear-gradient(0deg,rgba(0,0,0,.72),transparent 65%),
+ url("assets/hero.jpg") center/cover no-repeat,#111;
+ box-shadow:0 30px 90px #0008;
+}
+.hero-copy{max-width:650px}
+.kicker{font-size:11px;font-weight:1000;letter-spacing:4px;color:var(--lime);margin-bottom:18px}
+.hero h1{font-size:clamp(62px,10vw,125px);line-height:.78;letter-spacing:-8px;margin:0 0 25px;font-weight:1000}
+.hero h1 span{color:var(--lime)}
+.hero p{font-size:16px;line-height:1.55;color:#b8bdbd;max-width:580px}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
+.btn{border:1px solid #343838;background:#1a1d1d;color:#fff;padding:12px 18px;border-radius:10px;font-size:11px;font-weight:1000}
+.btn:hover{border-color:#666}
+.btn.primary{background:var(--lime);color:#111500;border-color:var(--lime)}
+.btn.orange{background:var(--orange);color:#171000;border-color:var(--orange)}
+.btn.red{background:var(--red);border-color:var(--red)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:14px}
+.card{background:linear-gradient(145deg,#171a1a,#101212);border:1px solid #2a2d2d;border-radius:16px;padding:20px}
+.card h3{font-size:12px;margin:0 0 9px}
+.card p{font-size:12px;line-height:1.55;color:#7f8484;margin:0}
+.heading{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:8px 0 18px}
+.heading h2{font-size:34px;letter-spacing:-1px;margin:0;font-weight:1000}
+.heading p{font-size:12px;color:#777;margin:6px 0 0}
+.tabs{display:flex;gap:7px;margin-bottom:12px}
+.tab{border:1px solid #333;background:#151818;color:#777;padding:10px 20px;border-radius:9px;font-size:11px;font-weight:1000}
+.tab.active.easy{background:var(--lime);color:#111}
+.tab.active.medium{background:var(--orange);color:#111}
+.tab.active.hard{background:var(--red);color:#fff}
+.search{width:100%;background:#0d0f0f;border:1px solid #303333;color:#fff;padding:13px;border-radius:9px;outline:none;margin-bottom:12px}
+.search:focus,input:focus{border-color:var(--lime)}
+.table-wrap{border:1px solid #2b2e2e;border-radius:15px;overflow:hidden;background:#111313}
+table{width:100%;border-collapse:collapse}
+th,td{padding:13px 15px;border-bottom:1px solid #292c2c;text-align:left;font-size:11px}
+th{font-size:9px;color:#666;letter-spacing:.6px}
+tr:last-child td{border-bottom:0}
+tr.me{background:rgba(184,219,13,.08)}
+.player{display:flex;align-items:center;gap:10px;font-weight:900}
+.player img{width:38px;height:38px;border-radius:9px;object-fit:cover;background:#252828}
+.score{font-size:16px;font-weight:1000}
+.muted{color:#777}
+.loading,.empty{padding:50px 20px;text-align:center;color:#777;font-size:11px;font-weight:900}
+.err{color:#ff7777}
+.auth-wrap{max-width:510px;margin:45px auto}
+.auth-card{padding:24px}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:18px}
+label{display:block;color:#777;font-size:10px;font-weight:900;margin:12px 0 6px}
+input{width:100%;padding:13px;border-radius:9px;background:#0b0d0d;border:1px solid #303333;color:#fff;outline:0}
+.message{min-height:19px;margin-top:10px;font-size:11px;color:#ff7676}
+.profile-grid{display:grid;grid-template-columns:310px 1fr;gap:14px}
+.profile-card{text-align:center}
+.profile-card .avatar-big{width:128px;height:128px;border-radius:22px;object-fit:cover;background:#252828;border:1px solid #444;margin:0 auto 16px}
+.profile-card h3{font-size:24px;margin:0}
+.profile-card p{color:#777;font-size:11px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{background:#0d0f0f;border:1px solid #292c2c;border-radius:12px;padding:14px}
+.stat span{display:block;color:#666;font-size:9px;font-weight:900}
+.stat b{display:block;font-size:23px;margin-top:7px}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.news-img{width:100%;height:180px;object-fit:cover;border-radius:11px;margin-bottom:13px}
+.news-date{font-size:9px;color:#666;margin-bottom:7px}
+.game-box{border:1px solid #2b2e2e;border-radius:16px;background:#111313;padding:22px}
+.game-box .big-play{min-height:450px;border-radius:14px;background:
+ linear-gradient(145deg,rgba(184,219,13,.14),rgba(0,0,0,.85)),
+ url("assets/hero.jpg") center/cover;display:flex;align-items:center;justify-content:center;text-align:center}
+.big-play h2{font-size:50px;margin:0 0 10px}
+.big-play p{color:#bbb}
+footer{border-top:1px solid #202222;color:#555;text-align:center;padding:28px;font-size:9px}
+.toast{position:fixed;left:18px;bottom:18px;z-index:100;padding:14px 18px;border-radius:10px;background:#171a1a;border:1px solid #3b3f3f;box-shadow:0 15px 60px #0009;font-size:11px;font-weight:1000;display:none}
+.toast.show{display:block}.toast.ok{color:var(--lime)}.toast.bad{color:#ff7676}
+@media(max-width:850px){
+ .top{padding:0 14px}.nav{display:none}.cards,.news-grid,.profile-grid{grid-template-columns:1fr}
+ .hero{min-height:560px;padding:30px}.hero h1{letter-spacing:-5px}.stats{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){
+ main{padding:14px 10px 50px}.hero{border-radius:17px}.hero h1{font-size:62px}
+ th:nth-child(3),td:nth-child(3){display:none}.heading h2{font-size:28px}
+}
+
+.game-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:5px 3px 17px}
+.game-toolbar b{display:block;font-size:14px}
+.game-toolbar span{display:block;color:#676c6c;font-size:9px;margin-top:5px;font-weight:900}
+.game-frame-wrap{width:100%;aspect-ratio:16/9;min-height:480px;background:#050606;border:1px solid #303333;border-radius:14px;overflow:hidden}
+.game-frame-wrap iframe{width:100%;height:100%;border:0;background:#000}
+.game-frame-wrap .big-play{min-height:100%;border-radius:0}
+.hero:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,transparent 55%,rgba(184,219,13,.07));mix-blend-mode:screen}
+.hero-copy{position:relative;z-index:2}
+.hero{box-shadow:0 35px 100px #000b, inset 0 0 100px #0005}
+.card{box-shadow:0 12px 45px #0005}
+@media(max-width:760px){.game-toolbar{align-items:flex-start;flex-direction:column}.game-frame-wrap{min-height:300px}}
+
+
+.lang-switch{display:flex;gap:3px;background:#111313;border:1px solid #292d2d;border-radius:8px;padding:3px}
+.lang{border:0;background:transparent;color:#666;padding:7px 8px;border-radius:6px;font-size:9px;font-weight:1000}
+.lang.active{background:#B8DB0D;color:#101300}
+.section-rule{height:1px;background:linear-gradient(90deg,#B8DB0D,transparent);margin:0 0 22px}
+
+/* CUBE RAGE V5 — full visual refresh */
+body{
+ background:
+ radial-gradient(900px 500px at 78% -10%,rgba(184,219,13,.12),transparent 60%),
+ radial-gradient(700px 450px at -10% 45%,rgba(255,189,57,.06),transparent 60%),
+ #070808;
+}
+.top{height:80px;padding:0 30px;background:rgba(5,6,6,.94);border-bottom:1px solid #242827}
+.logo{font-size:30px;letter-spacing:-2px}
+.nav{justify-content:center}
+.nav button{padding:13px 15px;letter-spacing:1px}
+.user-mini{min-width:118px;justify-content:flex-end}
+.hero{
+ min-height:700px;
+ border:1px solid #333937;
+ background:
+ linear-gradient(90deg,rgba(4,5,5,.98) 0%,rgba(4,5,5,.82) 35%,rgba(4,5,5,.28) 70%,rgba(4,5,5,.55)),
+ linear-gradient(0deg,rgba(0,0,0,.9),transparent 62%),
+ url("assets/hero.jpg") center/cover no-repeat;
+}
+.hero-copy{max-width:720px}
+.hero h1{font-size:clamp(72px,11vw,150px);line-height:.74;letter-spacing:-10px}
+.hero p{font-size:17px;max-width:630px}
+.hero .actions .primary{min-width:170px}
+.cards{margin-top:16px;grid-template-columns:1.2fr 1fr 1fr}
+.card{border-radius:18px}
+.heading{margin-top:28px}
+.heading h2{font-size:44px}
+.tabs{background:#0d0f0f;border:1px solid #252928;border-radius:12px;padding:5px;width:max-content}
+.tab{border:0;background:transparent;padding:11px 20px}
+.tab.active.easy{background:#b8db0d}.tab.active.medium{background:#ffbd39}.tab.active.hard{background:#ef5350}
+.search{background:#0a0c0c;border-radius:12px;padding:15px}
+.table-wrap{border-radius:18px}
+th{padding:15px;color:#666}
+td{padding:15px}
+.player img{width:42px;height:42px;border-radius:12px}
+.podium{gap:14px;margin:0 0 16px}
+.podium-card{min-height:180px;border-radius:18px;padding:20px}
+.podium-card:nth-child(1){background:linear-gradient(145deg,#27230e,#111313);transform:translateY(-8px)}
+.podium-card:nth-child(2){background:linear-gradient(145deg,#1c2020,#111313)}
+.podium-card:nth-child(3){background:linear-gradient(145deg,#21180f,#111313)}
+.podium-rank{font-size:42px}
+.podium-score{font-size:30px;color:var(--lime)}
+.profile-grid{grid-template-columns:350px 1fr}
+.profile-card{padding:32px}
+.profile-card .avatar-big{width:150px;height:150px;border-radius:28px}
+.stats{gap:12px}
+.stat{padding:18px;border-radius:15px}
+.news-grid{grid-template-columns:1.4fr 1fr 1fr;grid-auto-rows:auto}
+.news-grid .card:first-child{grid-row:span 2}
+.news-grid .card:first-child .news-img{height:330px}
+.news-grid .card{padding:12px;overflow:hidden}
+.news-grid .card h3,.news-grid .card p,.news-grid .card .news-date{padding:0 8px}
+.news-grid .card h3{font-size:17px}
+.news-grid .card p{font-size:11px}
+.news-img{height:180px;display:block;margin-bottom:11px;border-radius:12px}
+.game-box{background:#0b0d0d;border-radius:18px;padding:16px}
+.game-toolbar{border:0;background:#111414;margin:0 0 10px;padding:13px 15px}
+.game-frame-wrap{border-radius:15px;min-height:520px}
+.auth-wrap{max-width:560px}
+.auth-card{border-radius:20px;padding:30px}
+.lang-switch{margin-left:8px}
+footer{padding:40px 20px;color:#464b4a}
+@media(max-width:850px){
+ .top{padding:0 12px}.logo{font-size:23px}.user-mini{min-width:auto}
+ .hero{min-height:620px}.cards,.news-grid{grid-template-columns:1fr}
+ .news-grid .card:first-child{grid-row:auto}.news-grid .card:first-child .news-img{height:220px}
+ .profile-grid{grid-template-columns:1fr}
+}
+
+/* CUBE RAGE V6 — player-first homepage */
+.mode-strip{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin:16px 0 0;
+}
+.mode-card{
+  position:relative;
+  min-height:150px;
+  padding:22px;
+  text-align:left;
+  border:1px solid #2b302f;
+  border-radius:18px;
+  background:#0c0f0f;
+  color:#f4f6f5;
+  cursor:pointer;
+  overflow:hidden;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease;
+}
+.mode-card:hover{
+  transform:translateY(-3px);
+  border-color:#555d59;
+  background:#101313;
+}
+.mode-card::after{
+  content:"";
+  position:absolute;
+  width:140px;height:140px;
+  right:-45px;bottom:-70px;
+  border-radius:50%;
+  opacity:.12;
+}
+.mode-card.easy::after{background:#b8db0d}
+.mode-card.medium::after{background:#ffbd39}
+.mode-card.hard::after{background:#ef5350}
+.mode-name{display:block;font-size:34px;font-weight:950;letter-spacing:-1px}
+.mode-meta{display:block;margin-top:5px;font-size:11px;letter-spacing:2px;color:#777e7b}
+.mode-card strong{display:block;margin-top:30px;font-size:12px;letter-spacing:1px}
+.mode-card.easy strong{color:#b8db0d}
+.mode-card.medium strong{color:#ffbd39}
+.mode-card.hard strong{color:#ef5350}
+
+/* Remove the old generic card rhythm on the home screen. */
+#view-home > .cards{display:none}
+
+/* More game-like headings */
+.heading p{color:#747b78}
+.rating-toolbar,.news-toolbar,.profile-toolbar{border-radius:16px}
+
+/* Mobile-first behavior */
+@media(max-width:760px){
+  .mode-strip{grid-template-columns:1fr}
+  .mode-card{min-height:125px}
+  .mode-card strong{margin-top:20px}
+  .hero h1{letter-spacing:-6px}
+  .hero{min-height:570px}
+}
+
+/* CUBE RAGE V7 — navigation + profile avatar */
+.logo-home{
+  border:0;
+  margin:0;
+  padding:0;
+  background:transparent;
+  color:#fff;
+  cursor:pointer;
+  font:inherit;
+  font-weight:1000;
+  letter-spacing:-2px;
+  text-align:left;
+}
+.logo-home b{color:var(--lime)}
+.logo-home:hover{filter:brightness(1.12)}
+.avatar-actions{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:16px;
+}
+.avatar-btn{
+  border-color:#3b423f;
+}
+.avatar-btn:hover{
+  border-color:var(--lime);
+  color:var(--lime);
+}
+.avatar-actions .btn{
+  min-width:145px;
+}
+.profile-card .avatar-big{
+  display:block;
+}
+@media(max-width:760px){
+  .avatar-actions .btn{min-width:0;flex:1}
+}
+
+/* ================================
+   CUBE RAGE V8 — FULL RESPONSIVE
+   ================================ */
+
+.mobile-menu-btn{
+  display:none;
+  width:42px;
+  height:42px;
+  border:1px solid #303633;
+  border-radius:12px;
+  background:#111514;
+  color:#fff;
+  cursor:pointer;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:5px;
+  flex:0 0 auto;
+}
+.mobile-menu-btn span{
+  display:block;
+  width:19px;
+  height:2px;
+  background:#fff;
+  border-radius:3px;
+}
+.mobile-nav{
+  display:none;
+}
+
+@media (max-width: 900px){
+  header{
+    padding:14px 18px !important;
+    min-height:66px;
+  }
+  header .logo-home{
+    font-size:20px !important;
+    letter-spacing:-1.4px;
+  }
+  header nav{
+    display:none !important;
+  }
+  .mobile-menu-btn{
+    display:flex;
+  }
+  .mobile-nav{
+    position:fixed;
+    z-index:9999;
+    top:74px;
+    left:12px;
+    right:12px;
+    display:none;
+    padding:10px;
+    background:rgba(12,14,14,.98);
+    border:1px solid #303633;
+    border-radius:16px;
+    box-shadow:0 18px 45px rgba(0,0,0,.55);
+  }
+  .mobile-nav.open{
+    display:grid;
+    gap:6px;
+  }
+  .mobile-nav button{
+    width:100%;
+    min-height:48px;
+    border:1px solid transparent;
+    border-radius:11px;
+    background:#151918;
+    color:#e9ecea;
+    text-align:left;
+    padding:0 15px;
+    font-weight:900;
+    cursor:pointer;
+  }
+  .mobile-nav button:hover,
+  .mobile-nav button.active{
+    background:#b8db0d;
+    color:#0b0d0c;
+  }
+
+  .page, main, .container{
+    width:auto !important;
+    max-width:none !important;
+    margin-left:14px !important;
+    margin-right:14px !important;
+  }
+
+  .hero{
+    min-height:unset !important;
+    padding:48px 24px !important;
+  }
+  .hero h1{
+    font-size:clamp(48px,14vw,92px) !important;
+    line-height:.82 !important;
+  }
+  .hero p{
+    max-width:100% !important;
+    font-size:16px !important;
+  }
+
+  .grid,
+  .cards,
+  .features,
+  .stats-grid,
+  .profile-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  .card,
+  .panel,
+  .section-card{
+    min-width:0 !important;
+  }
+
+  .rating-table{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  input, select, textarea, .search, .input{
+    width:100% !important;
+    box-sizing:border-box;
+  }
+
+  .actions, .hero-actions{
+    flex-wrap:wrap !important;
+  }
+
+  button, .btn{
+    min-height:44px;
+  }
+}
+
+@media (max-width: 560px){
+  body{
+    overflow-x:hidden;
+  }
+  header{
+    padding:12px 14px !important;
+  }
+  header > div{
+    gap:8px !important;
+  }
+  .header-right{
+    gap:7px !important;
+  }
+  .lang-switch{
+    transform:scale(.92);
+    transform-origin:right center;
+  }
+  .user-name{
+    display:none !important;
+  }
+  .user-avatar{
+    width:36px !important;
+    height:36px !important;
+  }
+
+  .hero{
+    padding:34px 18px !important;
+    border-radius:18px !important;
+  }
+
+  .hero h1{
+    font-size:54px !important;
+  }
+
+  .hero-actions{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+  }
+  .hero-actions .btn,
+  .hero-actions button{
+    width:100% !important;
+  }
+
+  .mode-card{
+    padding:20px !important;
+  }
+
+  .profile-card{
+    padding:20px !important;
+  }
+
+  .avatar-big{
+    width:96px !important;
+    height:96px !important;
+  }
+
+  table{
+    min-width:560px;
+  }
+
+  .rating-tabs{
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:repeat(3,1fr) !important;
+  }
+
+  .rating-tabs button{
+    min-width:0 !important;
+    padding:12px 6px !important;
+  }
+
+  .mobile-nav{
+    top:68px;
+  }
+}
+
+/* Don't let fixed desktop dimensions create horizontal overflow. */
+img, video, canvas, iframe{
+  max-width:100%;
+}
+
+/* CUBE RAGE V9 — stronger desktop branding */
+.logo.logo-home{
+  font-size:36px !important;
+  line-height:1 !important;
+  letter-spacing:-2.8px !important;
+  min-width:max-content;
+}
+@media (max-width:1200px){
+  .logo.logo-home{font-size:33px !important;}
+}
+@media (max-width:900px){
+  .logo.logo-home{font-size:29px !important;}
+}
+@media (max-width:560px){
+  .logo.logo-home{font-size:26px !important;}
+}
+</style>
+<style id="cube-rage-v15-fixes">
+.rating-lock{min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:36px 24px;background:#0d100f;border:1px solid #2b312e;border-radius:18px}
+.rating-lock-icon{width:58px;height:58px;display:grid;place-items:center;border-radius:15px;background:#171c19;border:1px solid #303733;font-size:25px;margin-bottom:16px}
+.rating-lock h3{margin:0 0 9px;font-weight:900;letter-spacing:.4px}
+.rating-lock p{max-width:500px;margin:0 0 22px;color:#9da39f;line-height:1.6}
+#gameFrame{width:100%;height:min(72vh,720px);min-height:520px;border:0;display:block;background:#000}
+@media(max-width:700px){#gameFrame{height:72vh;min-height:430px}}
+</style>
+
+<style id="cube-rage-social-v1">
+/* CUBE RAGE — social/community layer */
+.social-home{display:grid;grid-template-columns:230px minmax(0,1fr) 270px;gap:14px;margin-top:16px;align-items:start}
+.social-side{position:sticky;top:96px;display:grid;gap:12px}
+.social-panel{background:linear-gradient(145deg,#121515,#0c0f0f);border:1px solid #292e2c;border-radius:18px;padding:16px;box-shadow:0 14px 45px #0005}
+.social-panel h3{margin:0 0 12px;font-size:12px;letter-spacing:.8px}
+.social-panel p{margin:0;color:#7f8783;font-size:10px;line-height:1.55}
+.quick-list{display:grid;gap:5px}
+.quick-link{width:100%;border:0;background:transparent;color:#aeb4b1;border-radius:10px;padding:11px 10px;text-align:left;font-size:10px;font-weight:900;display:flex;align-items:center;gap:9px}
+.quick-link:hover,.quick-link.active{background:#1a1e1d;color:#fff}
+.quick-link .qicon{width:25px;height:25px;display:grid;place-items:center;border-radius:8px;background:#191d1c;color:var(--lime);font-size:12px}
+.community-feed{display:grid;gap:12px;min-width:0}
+.feed-card{background:linear-gradient(145deg,#131717,#0d1010);border:1px solid #292e2c;border-radius:19px;overflow:hidden;box-shadow:0 16px 55px #0005}
+.feed-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 17px 10px}
+.feed-author{display:flex;align-items:center;gap:10px}
+.feed-avatar{width:38px;height:38px;border-radius:11px;object-fit:cover;background:#252a28;border:1px solid #383e3b}
+.feed-author b{display:block;font-size:11px}
+.feed-author span{display:block;color:#686f6c;font-size:9px;margin-top:3px}
+.feed-body{padding:0 17px 16px}
+.feed-body h3{font-size:19px;letter-spacing:-.3px;margin:6px 0 8px}
+.feed-body p{font-size:11px;line-height:1.65;color:#969e9a;margin:0}
+.feed-cover{width:100%;height:260px;object-fit:cover;display:block}
+.feed-actions{display:flex;gap:5px;border-top:1px solid #252a28;padding:7px 10px}
+.feed-action{border:0;background:transparent;color:#747c78;border-radius:9px;padding:10px 12px;font-size:9px;font-weight:1000;flex:1}
+.feed-action:hover{background:#191d1c;color:#fff}
+.feed-action.liked{color:var(--lime);background:rgba(184,219,13,.08)}
+.feed-like-wrap{position:relative;flex:1;display:flex;min-width:0}
+.feed-like-wrap .feed-action{width:100%}
+.like-people-popover{position:absolute;left:50%;bottom:calc(100% + 9px);transform:translate(-50%,6px);width:250px;max-width:calc(100vw - 30px);padding:12px;background:rgba(12,15,15,.98);border:1px solid #39403d;border-radius:13px;box-shadow:0 18px 50px #000b;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .16s ease,transform .16s ease;z-index:80}
+.like-people-popover.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.like-people-popover::after{content:"";position:absolute;left:50%;bottom:-6px;width:10px;height:10px;background:#0c0f0f;border-right:1px solid #39403d;border-bottom:1px solid #39403d;transform:translateX(-50%) rotate(45deg)}
+.like-people-title{font-size:9px;font-weight:1000;letter-spacing:.8px;color:#7d8581;margin-bottom:9px}
+.like-people-list{display:flex;flex-wrap:wrap;gap:7px;max-height:150px;overflow:auto}
+.like-person{display:inline-flex;align-items:center;gap:6px;padding:5px 7px;border:1px solid #292f2c;border-radius:9px;background:#111514;font-size:9px;font-weight:900;color:#e9ecea}
+.like-person img,.like-person-avatar{width:24px;height:24px;border-radius:7px;object-fit:cover;background:#252a28;border:1px solid #343a37}
+.like-empty{font-size:9px;color:#666;padding:3px 0}
+.remember-row{display:flex;align-items:center;gap:8px;margin-top:12px;color:#777;font-size:10px;font-weight:900;cursor:pointer;user-select:none}
+.remember-row input{width:15px;height:15px;margin:0;accent-color:var(--lime);cursor:pointer}
+
+.mode-feed-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}
+.mode-feed{border:1px solid #303633;border-radius:13px;padding:14px;background:#0c0f0f;cursor:pointer;text-align:left}
+.mode-feed:hover{border-color:#59615c;transform:translateY(-2px)}
+.mode-feed b{display:block;font-size:15px}.mode-feed span{display:block;color:#68706c;font-size:8px;letter-spacing:1px;margin-top:5px}.mode-feed.easy b{color:#b8db0d}.mode-feed.medium b{color:#ffbd39}.mode-feed.hard b{color:#ef5350}
+.promo-box{padding:18px;background:linear-gradient(145deg,rgba(184,219,13,.12),rgba(184,219,13,.02));border:1px solid rgba(184,219,13,.22);border-radius:15px}
+.promo-box strong{display:block;font-size:14px;margin-bottom:6px}.promo-box p{margin-bottom:13px}
+.share-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
+.share-btn{border:1px solid #343a37;background:#171b1a;color:#fff;border-radius:10px;padding:10px 8px;font-size:9px;font-weight:1000}.share-btn:hover{border-color:#b8db0d;color:#b8db0d}.share-btn.following{background:rgba(184,219,13,.12);border-color:var(--lime);color:var(--lime)}
+.trust-list{display:grid;gap:9px}.trust-item{display:flex;gap:9px;align-items:flex-start}.trust-dot{width:8px;height:8px;border-radius:50%;background:var(--lime);margin-top:3px;flex:0 0 auto}.trust-item b{display:block;font-size:10px}.trust-item span{display:block;color:#69706d;font-size:8px;margin-top:2px;line-height:1.45}
+.feed-news-list{display:grid;gap:8px}.feed-news-item{display:grid;grid-template-columns:55px 1fr;gap:9px;align-items:center;cursor:pointer}.feed-news-item img{width:55px;height:45px;border-radius:8px;object-fit:cover;background:#202422}.feed-news-item b{font-size:9px;line-height:1.35}.feed-news-item span{display:block;color:#626a66;font-size:8px;margin-top:3px}
+.share-toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;z-index:200;background:#151918;border:1px solid #3b423e;color:#fff;border-radius:12px;padding:12px 16px;font-size:10px;font-weight:1000;transition:.22s ease;box-shadow:0 15px 50px #0009}.share-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:1050px){.social-home{grid-template-columns:190px minmax(0,1fr)}.social-side.right-side{display:none}}
+@media(max-width:760px){.social-home{display:block}.social-side{position:static;margin-bottom:12px}.social-side.left-side{display:none}.mode-feed-grid{grid-template-columns:1fr}.feed-cover{height:210px}.feed-head{padding:13px}.feed-body{padding:0 13px 14px}}
+.feed-card{transition:transform .18s ease,border-color .18s ease}.feed-card:hover{border-color:#3b423e}.social-panel{transition:border-color .18s ease}.social-panel:hover{border-color:#39403c}.feed-action{transition:background .15s ease,color .15s ease}.share-btn{transition:transform .15s ease,border-color .15s ease}.share-btn:active,.feed-action:active,.quick-link:active{transform:scale(.98)}
+
+#fullscreenGame{white-space:nowrap}
+#gameFrameWrap:fullscreen{width:100vw;height:100vh;min-height:100vh;border:0;border-radius:0;background:#000}
+#gameFrameWrap:fullscreen #gameFrame{width:100vw;height:100vh;min-height:100vh}
+@media(max-width:700px){#fullscreenGame{width:100%}}
+</style>
+
+<style id="cube-rage-final-polish">
+/* CUBE RAGE FINAL POLISH — fluid motion + proper game viewport */
+:root{--ease-cube:cubic-bezier(.22,1,.36,1)}
+html{scroll-behavior:smooth}
+body{overflow-x:hidden}
+.view.active{animation:crViewIn .38s var(--ease-cube) both}
+@keyframes crViewIn{from{opacity:0;transform:translateY(12px) scale(.992)}to{opacity:1;transform:none}}
+.hero{animation:crHeroIn .7s var(--ease-cube) both;transform-origin:center}
+@keyframes crHeroIn{from{opacity:0;transform:scale(1.018) translateY(10px)}to{opacity:1;transform:none}}
+.hero-copy>*{animation:crCopyIn .65s var(--ease-cube) both;animation-delay:calc(var(--i,0)*70ms)}
+.hero-copy .kicker{--i:0}.hero-copy h1{--i:1}.hero-copy p{--i:2}.hero-copy .actions{--i:3}
+@keyframes crCopyIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.card,.mode-card,.feed-card,.social-panel,.game-box,.table-wrap,.auth-card{transition:transform .28s var(--ease-cube),border-color .28s ease,box-shadow .28s ease,background .28s ease}
+.card:hover,.feed-card:hover,.social-panel:hover{transform:translateY(-3px);border-color:#39413e;box-shadow:0 20px 60px #0008}
+.mode-card{transition:transform .28s var(--ease-cube),border-color .28s ease,box-shadow .28s ease,background .28s ease}
+.mode-card:hover,.mode-card.selected{transform:translateY(-4px);border-color:currentColor;box-shadow:0 16px 50px #0009}
+.mode-card.selected.easy{box-shadow:0 0 0 1px rgba(184,219,13,.25),0 18px 55px rgba(184,219,13,.12)}
+.mode-card.selected.medium{box-shadow:0 0 0 1px rgba(255,189,57,.25),0 18px 55px rgba(255,189,57,.11)}
+.mode-card.selected.hard{box-shadow:0 0 0 1px rgba(239,83,80,.25),0 18px 55px rgba(239,83,80,.11)}
+.btn,.tab,.lang,.quick-link,.feed-action,.share-btn{transition:transform .18s var(--ease-cube),background .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease}
+.btn:hover,.tab:hover,.lang:hover,.share-btn:hover{transform:translateY(-2px)}
+.btn:active,.tab:active,.lang:active,.quick-link:active,.feed-action:active,.share-btn:active{transform:scale(.97)}
+.btn.primary{box-shadow:0 8px 25px rgba(184,219,13,.13)}
+.btn.primary:hover{box-shadow:0 12px 34px rgba(184,219,13,.23)}
+.logo-home{transition:transform .25s var(--ease-cube),filter .25s ease}
+.logo-home:hover{transform:scale(1.035);filter:brightness(1.16)}
+.logo-home:active{transform:scale(.97)}
+.top{transition:background .3s ease,box-shadow .3s ease}
+.search,input{transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+.search:focus,input:focus{box-shadow:0 0 0 3px rgba(184,219,13,.08)}
+.news-card,.feed-card{animation:crCardIn .5s var(--ease-cube) both}
+.news-card:nth-child(2),.feed-card:nth-child(2){animation-delay:60ms}.news-card:nth-child(3),.feed-card:nth-child(3){animation-delay:110ms}.news-card:nth-child(4),.feed-card:nth-child(4){animation-delay:160ms}
+@keyframes crCardIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+/* Game area: use the real available viewport instead of a narrow 16:9 crop */
+.game-frame-wrap{position:relative;width:100%;height:clamp(600px,76vh,900px);min-height:600px;aspect-ratio:auto;background:#000;border:1px solid #303633;border-radius:16px;overflow:hidden;box-shadow:0 24px 80px #0009}
+.game-frame-wrap #gameFrame{display:block;width:100%;height:100%;min-height:0;border:0;background:#000}
+.game-frame-wrap:has(#gameFrame){background:#000}
+.game-frame-wrap:fullscreen{width:100vw!important;height:100vh!important;min-height:100vh!important;border-radius:0}
+.game-frame-wrap:fullscreen #gameFrame{width:100%!important;height:100%!important}
+@media(max-width:900px){.game-frame-wrap{height:72vh;min-height:480px}}
+@media(max-width:560px){.game-frame-wrap{height:70vh;min-height:380px;border-radius:12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+
+<style id="cube-rage-final-refinement">
+/* FINAL REFINEMENT */
+:root{--ease-cube:cubic-bezier(.22,1,.36,1)}
+.heading h2{font-size:clamp(34px,4vw,52px)!important;line-height:.95!important;letter-spacing:-1.8px}
+.heading p{font-size:12px!important;line-height:1.5}
+.rating-lock h3{font-size:20px}.rating-lock p{font-size:12px}
+#view-rating .tabs{margin-top:6px}.tab{font-size:11px!important;min-height:42px}
+#view-rating .search{font-size:13px!important;min-height:46px}
+#view-rating th{font-size:10px!important;letter-spacing:1px}.table-wrap td{font-size:13px!important}.player{font-size:13px}.score{font-size:19px!important}.player img{width:44px!important;height:44px!important}
+.profile-card h3{font-size:28px!important}.profile-card p{font-size:12px!important}.profile-card{padding:32px!important}.stat span{font-size:10px!important}.stat b{font-size:27px!important}
+.news-grid .card h3{font-size:20px!important}.news-grid .card p{font-size:12px!important;line-height:1.65}.news-date{font-size:10px!important}
+.news-card{transition:transform .25s var(--ease-cube),border-color .25s,box-shadow .25s}.news-card:hover{transform:translateY(-6px);box-shadow:0 24px 70px #0009;border-color:#434b47}
+.feed-action{font-size:11px!important;min-height:44px}.feed-action svg{width:16px;height:16px;vertical-align:-3px;margin-right:5px;stroke:currentColor}
+.feed-like-wrap{position:relative;overflow:visible}.feed-actions{position:relative;z-index:20;overflow:visible}
+.like-people-popover{left:0!important;right:0!important;bottom:calc(100% + 10px)!important;width:min(340px,calc(100vw - 28px))!important;max-width:none!important;transform:translateY(8px)!important;z-index:9999!important;box-sizing:border-box}
+.like-people-popover.show{transform:translateY(0)!important}.like-people-list{max-height:190px;overflow:auto}.like-person{font-size:11px!important}.like-person img,.like-person-avatar{width:30px;height:30px}
+.game-frame-wrap{position:relative;min-height:600px!important;aspect-ratio:auto!important;background:#000;display:flex;align-items:stretch;justify-content:stretch}
+.game-frame-wrap .big-play{position:absolute;inset:0;min-height:0!important;z-index:5;display:grid;place-items:center;background:radial-gradient(circle at center,rgba(184,219,13,.12),rgba(0,0,0,.92) 60%),url("assets/hero.jpg") center/cover}
+.game-frame-wrap.playing .big-play{display:none}.game-frame-wrap #gameFrame{width:100%;height:100%;min-height:600px;border:0;display:block;background:#000}
+.game-start-center{min-width:220px;min-height:62px;font-size:15px!important;border-radius:15px!important;box-shadow:0 12px 45px rgba(184,219,13,.2);transition:transform .2s var(--ease-cube),box-shadow .2s}.game-start-center:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 18px 60px rgba(184,219,13,.28)}
+.mode-card.selected,.mode-feed.selected{border-color:var(--lime)!important;box-shadow:0 0 0 1px var(--lime),0 16px 50px rgba(184,219,13,.12)}
+.btn,.tab,.mode-card,.mode-feed,.feed-action{transition:transform .2s var(--ease-cube),border-color .2s,background .2s,color .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px)}
+@media(max-width:760px){.game-frame-wrap,.game-frame-wrap #gameFrame{min-height:430px!important}.heading h2{font-size:34px!important}.table-wrap{overflow-x:auto}.profile-card{padding:24px!important}}
+</style>
+<style id="cube-rage-final-user-polish">
+.game-start-center{min-width:150px!important;min-height:48px!important;padding:12px 22px!important;font-size:12px!important;border-radius:11px!important}
+.game-start-center .svg-icon svg{width:16px!important;height:16px!important}
+.game-frame-wrap{height:min(78vh,820px)!important;min-height:560px!important;aspect-ratio:auto!important}
+.game-frame-wrap .big-play{padding:24px!important}
+.game-frame-wrap .big-play>div{max-width:420px}
+.game-frame-wrap .big-play h2{font-size:clamp(34px,5vw,58px)!important;margin-bottom:18px!important}
+#view-home .mode-card.selected,#view-home .mode-feed.selected{border-color:inherit!important;box-shadow:none!important;transform:none!important}
+#view-home .mode-card.selected.easy,#view-home .mode-card.selected.medium,#view-home .mode-card.selected.hard{box-shadow:none!important}
+.feed-like-wrap{position:relative!important;overflow:visible!important}
+.feed-actions{position:relative!important;z-index:100!important;overflow:visible!important}
+.like-people-popover{left:0!important;right:0!important;bottom:calc(100% + 10px)!important;width:min(340px,calc(100vw - 28px))!important;max-width:none!important;transform:translateY(8px)!important;z-index:99999!important}
+.like-people-popover.show{transform:translateY(0)!important}
+@media(max-width:900px){.game-frame-wrap{height:72vh!important;min-height:500px!important}}
+@media(max-width:560px){.game-frame-wrap{height:68vh!important;min-height:390px!important}}
+.game-frame-wrap:not(.playing) .big-play>div{animation:crReadyFloat 4.5s ease-in-out infinite}
+.game-frame-wrap:not(.playing)::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 0%,rgba(184,219,13,.06) 45%,transparent 70%);transform:translateX(-100%);animation:crGameSweep 6s ease-in-out infinite}
+@keyframes crReadyFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes crGameSweep{0%,45%{transform:translateX(-100%)}75%,100%{transform:translateX(100%)}}
+.feed-like-wrap .feed-action{position:relative}
+.feed-like-wrap .feed-action svg{transition:transform .25s var(--ease-cube)}
+.feed-like-wrap .feed-action:hover svg{transform:scale(1.12) rotate(-4deg)}
+.feed-like-wrap .feed-action.liked svg{filter:drop-shadow(0 0 6px rgba(184,219,13,.35))}
+
+/* CUBE RAGE V3 — FINAL MOTION + GAME CTA + PUBLIC LIKES */
+:root{--ease-cube:cubic-bezier(.2,.8,.2,1)}
+body{scroll-behavior:smooth}
+.view{animation:crViewIn .38s var(--ease-cube) both}
+@keyframes crViewIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.card,.social-panel,.feed-card,.mode-card,.game-box,.table-wrap{transition:transform .28s var(--ease-cube),border-color .28s ease,box-shadow .28s ease,background .28s ease}
+.card:hover,.social-panel:hover,.feed-card:hover{transform:translateY(-3px);border-color:#39413d;box-shadow:0 18px 55px #0008}
+.btn{position:relative;overflow:hidden;transition:transform .2s var(--ease-cube),box-shadow .2s var(--ease-cube),background .2s ease,border-color .2s ease}
+.btn::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.14) 50%,transparent 75%);transform:translateX(-130%);transition:transform .55s var(--ease-cube);pointer-events:none}
+.btn:hover::after{transform:translateX(130%)}
+.btn.primary{box-shadow:0 8px 28px rgba(184,219,13,.14)}
+.btn.primary:hover{box-shadow:0 14px 42px rgba(184,219,13,.25)}
+.game-toolbar{align-items:center}
+.game-toolbar .actions{margin-top:0;align-items:center}
+.game-frame-wrap{height:min(76vh,780px)!important;min-height:520px!important;border-radius:18px!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.025),0 25px 80px #0009;position:relative}
+.game-frame-wrap::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:4;border-radius:inherit;box-shadow:inset 0 0 70px rgba(0,0,0,.5)}
+.game-frame-wrap.playing::before{opacity:.2}
+.game-frame-wrap .big-play{background:radial-gradient(circle at 50% 48%,rgba(184,219,13,.16),rgba(0,0,0,.82) 48%,rgba(0,0,0,.96) 100%),url("assets/hero.jpg") center/cover!important}
+.game-frame-wrap .big-play>div{animation:crGameIdle 3.8s ease-in-out infinite}
+@keyframes crGameIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.game-start-center{min-width:148px!important;width:auto!important;min-height:48px!important;padding:12px 24px!important;font-size:12px!important;font-weight:1000!important;letter-spacing:.7px!important;border-radius:11px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important}
+.game-start-center:hover{transform:translateY(-3px) scale(1.025)!important}
+.game-start-center:active{transform:scale(.97)!important}
+.game-start-center .svg-icon{display:inline-flex;align-items:center;justify-content:center}
+.game-start-center .svg-icon svg{width:17px!important;height:17px!important}
+.like-people-popover{padding:14px!important;width:min(360px,calc(100vw - 28px))!important;border-color:#424b47!important;background:rgba(11,14,13,.985)!important;backdrop-filter:blur(16px);box-shadow:0 24px 80px #000d!important}
+.like-people-title{font-size:10px!important;color:#aeb5b1!important;display:flex;align-items:center;justify-content:space-between}
+.like-people-list{display:grid!important;grid-template-columns:1fr 1fr;gap:7px!important;max-height:230px!important}
+.like-person{min-width:0!important;width:100%!important;box-sizing:border-box;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:7px 8px!important;border-color:#303733!important;background:#151918!important}
+.like-person:hover{border-color:#53605a;background:#1a1f1d}
+.like-person span:last-child{overflow:hidden;text-overflow:ellipsis}
+.feed-like-wrap .feed-action{display:flex;align-items:center;justify-content:center;gap:5px}
+.feed-like-wrap .feed-action svg{transition:transform .25s var(--ease-cube),fill .25s ease}
+.feed-like-wrap .feed-action:hover svg{transform:scale(1.12) rotate(-4deg)}
+.feed-like-wrap .feed-action.liked svg{fill:currentColor;filter:drop-shadow(0 0 7px rgba(184,219,13,.28))}
+.toast,.share-toast{backdrop-filter:blur(16px)!important;transition:opacity .25s var(--ease-cube),transform .25s var(--ease-cube)!important}
+.toast.show{animation:crToast .32s var(--ease-cube) both}
+@keyframes crToast{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.loading{animation:crPulse 1.4s ease-in-out infinite}
+@keyframes crPulse{0%,100%{opacity:.55}50%{opacity:1}}
+@media(max-width:760px){
+ .game-frame-wrap{height:70vh!important;min-height:420px!important}
+ .game-toolbar .actions{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:7px}
+ .game-toolbar .actions .primary{grid-column:1/-1}
+ .like-people-list{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* CUBE RAGE SOCIAL POLISH V4 */
+.profile-shell{position:relative;animation:pageIn .45s ease both}.profile-cover{height:150px;border:1px solid #303633;border-radius:22px 22px 0 0;background:linear-gradient(120deg,#101413 0%,#151b18 48%,#0b0d0d 100%);position:relative;overflow:hidden}.profile-cover:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 35%,rgba(184,219,13,.22),transparent 34%),linear-gradient(120deg,transparent 40%,rgba(255,255,255,.03) 50%,transparent 60%);animation:coverSweep 7s ease-in-out infinite}.profile-cover-glow{position:absolute;width:260px;height:260px;border-radius:50%;right:4%;top:-160px;background:rgba(184,219,13,.1);filter:blur(8px)}.profile-cover-label{position:absolute;right:18px;bottom:15px;padding:7px 10px;border:1px solid rgba(184,219,13,.3);border-radius:9px;color:var(--lime);font-size:8px;font-weight:1000;letter-spacing:1.4px;background:rgba(5,7,7,.55)}.profile-grid-polished{margin-top:-42px;position:relative;z-index:2;grid-template-columns:330px 1fr;gap:14px}.profile-card-polished{padding:28px;text-align:center;background:linear-gradient(155deg,#171c1a,#0d1010);box-shadow:0 22px 65px #0008}.profile-avatar-wrap{position:relative;width:max-content;margin:-2px auto 16px}.profile-card-polished .avatar-big{width:132px;height:132px;border-radius:28px;border:4px solid #111615;box-shadow:0 10px 35px #0008}.avatar-placeholder{display:grid;place-items:center;background:linear-gradient(145deg,#232a27,#101312);color:var(--lime);font-size:48px;font-weight:1000}.online-dot{position:absolute;right:4px;bottom:8px;width:18px;height:18px;border-radius:50%;background:var(--lime);border:4px solid #111615;box-shadow:0 0 0 0 rgba(184,219,13,.5);animation:pulseDot 2s infinite}.profile-identity h3{font-size:27px;margin:0;letter-spacing:-.8px}.profile-identity p{margin:6px 0 0;color:#707873;font-size:11px}.profile-badges{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:15px 0}.profile-badges span{padding:6px 8px;border-radius:8px;background:#171c19;border:1px solid #2d3430;color:#aeb5b1;font-size:8px;font-weight:1000;letter-spacing:.7px}.profile-follow-stat{padding:11px 0;margin:4px 0 14px;border-top:1px solid #262c29;border-bottom:1px solid #262c29}.profile-follow-stat b{display:block;font-size:22px;color:var(--lime)}.profile-follow-stat span{display:block;margin-top:2px;color:#69716d;font-size:8px;font-weight:1000;letter-spacing:1px}.profile-main-column{display:grid;gap:14px}.profile-stats-card,.profile-progress-card{padding:22px}.profile-section-title{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:16px}.profile-section-title>div>span{font-size:8px;color:#69716d;font-weight:1000;letter-spacing:1.4px}.profile-section-title h3{margin:4px 0 0;font-size:20px;letter-spacing:-.4px}.profile-status{display:flex;align-items:center;gap:6px;padding:7px 9px;border:1px solid #29312d;border-radius:9px;color:#7f8883;font-size:8px;font-weight:1000}.profile-status i{width:6px;height:6px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px rgba(184,219,13,.7)}.stats-polished{grid-template-columns:repeat(3,1fr)}.stats-polished .stat{min-height:92px;transition:transform .2s ease,border-color .2s ease,background .2s ease}.stats-polished .stat:hover{transform:translateY(-3px);border-color:#48514c;background:#121716}.profile-progress-card .profile-section-title{margin-bottom:11px}.profile-section-title>strong{font-size:24px;color:var(--lime)}.profile-progress{height:9px;border-radius:99px;background:#090b0b;border:1px solid #252b28;overflow:hidden}.profile-progress span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#829b08,var(--lime),#d9f84b);box-shadow:0 0 18px rgba(184,219,13,.35);transition:width .7s cubic-bezier(.2,.8,.2,1)}.profile-progress-card p{margin:12px 0 0;color:#707873;font-size:10px;line-height:1.6}.share-btn em{font-style:normal;color:#aeb5b1;margin-left:3px}.share-btn.following em{color:var(--lime)}
+.like-people-popover{box-sizing:border-box;max-height:230px;overflow:hidden}.like-people-list{max-height:175px;overflow:auto;padding-right:2px}.like-person{transition:transform .15s ease,border-color .15s ease}.like-person:hover{transform:translateY(-1px);border-color:#4b554f}.feed-action.liked svg{fill:currentColor;stroke:currentColor;animation:likePop .3s ease}.feed-action svg{width:16px;height:16px;vertical-align:-3px;transition:transform .18s ease}.feed-action:hover svg{transform:scale(1.1)}.feed-action.liked{font-weight:1000}
+@keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes coverSweep{0%,100%{transform:translateX(-10%);opacity:.7}50%{transform:translateX(10%);opacity:1}}@keyframes pulseDot{0%{box-shadow:0 0 0 0 rgba(184,219,13,.45)}70%{box-shadow:0 0 0 9px rgba(184,219,13,0)}100%{box-shadow:0 0 0 0 rgba(184,219,13,0)}}@keyframes likePop{0%{transform:scale(.7)}60%{transform:scale(1.2)}100%{transform:scale(1)}}@media(max-width:760px){.profile-cover{height:120px;border-radius:17px 17px 0 0}.profile-grid-polished{grid-template-columns:1fr;margin-top:-30px}.profile-card-polished{padding:22px 18px}.profile-card-polished .avatar-big{width:108px;height:108px;border-radius:23px}.stats-polished{grid-template-columns:repeat(2,1fr)}.profile-section-title h3{font-size:18px}.profile-cover-label{right:12px;bottom:12px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div id="app">
+<header class="top">
+ <button class="logo logo-home" id="logoHome" type="button" aria-label="CUBE RAGE HOME">CUBE <b>RAGE</b></button>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Menu" data-i18n-aria="menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+ <nav class="nav" id="nav">
+  <button class="active" data-view="home" data-i18n="nav_home">HOME</button>
+  <button data-view="play" data-i18n="nav_play">PLAY</button>
+  <button data-view="rating" data-i18n="nav_rating">RATING</button>
+  <button data-view="news" data-i18n="nav_news">NEWS</button>
+  <button data-view="profile" id="profileNav" data-i18n="nav_profile">LOGIN / PROFILE</button>
+ </nav>
+ <div class="lang-switch">
+  <button id="langUA" class="lang active">UA</button>
+  <button id="langEN" class="lang">EN</button>
+ </div>
+ <button class="user-mini" id="userMini" data-view="profile">
+  <span id="userName">GUEST</span>
+  <img id="userAvatar" src="" alt="">
+ </button>
+</header>
+<nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+  <button data-page="home" data-i18n="nav_home">HOME</button>
+  <button data-page="play" data-i18n="nav_play">PLAY</button>
+  <button data-page="rating" data-i18n="nav_rating">RATING</button>
+  <button data-page="news" data-i18n="nav_news">NEWS</button>
+  <button data-page="profile" data-i18n="nav_profile">LOGIN / PROFILE</button>
+</nav>
+
+
+<main>
+<section class="view active" id="view-home">
+ <div class="hero">
+  <div class="hero-copy">
+   <div class="kicker" data-i18n="official">CUBE RAGE / OFFICIAL</div>
+   <h1>CUBE<br><span>RAGE</span></h1>
+   <p data-i18n="hero_desc">Швидка гра, просте правило: грай, виживай і бий власний рекорд. Рейтинг доступний авторизованим гравцям. Увійди або зареєструйся, щоб переглядати результати.</p>
+   <div class="actions">
+    <button class="btn primary" data-view="play" data-i18n="play_now">PLAY NOW</button>
+    <button class="btn" data-view="rating" data-i18n="view_ranking">VIEW RANKING</button>
+   </div>
+  </div>
+ </div>
+ <div class="mode-strip">
+  <button class="mode-card easy" data-view="rating" data-mode="Easy">
+   <span class="mode-name">EASY</span>
+   <span class="mode-meta" data-i18n="top_records">TOP RECORDS</span>
+   <strong data-i18n="view_ranking_short">VIEW RANKING →</strong>
+  </button>
+  <button class="mode-card medium" data-view="rating" data-mode="Medium">
+   <span class="mode-name">MEDIUM</span>
+   <span class="mode-meta" data-i18n="top_records">TOP RECORDS</span>
+   <strong data-i18n="view_ranking_short">VIEW RANKING →</strong>
+  </button>
+  <button class="mode-card hard" data-view="rating" data-mode="Hard">
+   <span class="mode-name">HARD</span>
+   <span class="mode-meta" data-i18n="top_records">TOP RECORDS</span>
+   <strong data-i18n="view_ranking_short">VIEW RANKING →</strong>
+  </button>
+ </div>
+
+  <div class="social-home">
+    <aside class="social-side left-side">
+      <div class="social-panel">
+        <h3>CUBE RAGE</h3>
+        <div class="quick-list">
+          <button class="quick-link active" data-view="home"><span class="qicon">⌂</span> <span data-i18n="nav_home">HOME</span></button>
+          <button class="quick-link" data-view="play"><span class="qicon">▶</span> <span data-i18n="nav_play">PLAY</span></button>
+          <button class="quick-link" data-view="rating"><span class="qicon">★</span> <span data-i18n="nav_rating">RANKING</span></button>
+          <button class="quick-link" data-view="news"><span class="qicon">▤</span> <span data-i18n="nav_news">NEWS</span></button>
+          <button class="quick-link" data-view="profile"><span class="qicon">●</span> <span data-i18n="profile_short">PROFILE</span></button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="community-feed">
+      <article class="feed-card">
+        <div class="feed-head">
+          <div class="feed-author">
+            <img class="feed-avatar" src="assets/hero.jpg" alt="CUBE RAGE">
+            <div><b>CUBE RAGE</b><span data-i18n="official_now">OFFICIAL GAME PAGE · NOW</span></div>
+          </div>
+          <span class="kicker" data-i18n="official_badge" style="margin:0;font-size:8px">OFFICIAL</span>
+        </div>
+        <img class="feed-cover" src="assets/hero.jpg" alt="CUBE RAGE">
+        <div class="feed-body">
+          <h3 data-i18n="social_headline">PLAY. SURVIVE. BEAT YOUR RECORD.</h3>
+          <p data-i18n="social_desc">Jump into CUBE RAGE, choose your difficulty and try to push your score higher. Share the game with a friend and see who lasts longer.</p>
+          <div class="mode-feed-grid">
+            <button class="mode-feed easy" data-view="rating" data-mode="Easy"><b>EASY</b><span data-i18n="starter_run">STARTER RUN</span></button>
+            <button class="mode-feed medium" data-view="rating" data-mode="Medium"><b>MEDIUM</b><span data-i18n="more_pressure">MORE PRESSURE</span></button>
+            <button class="mode-feed hard" data-view="rating" data-mode="Hard"><b>HARD</b><span data-i18n="full_rage">FULL RAGE</span></button>
+          </div>
+        </div>
+        <div class="feed-actions">
+          <div class="feed-like-wrap"><button class="feed-action" data-like="official"><svg viewBox="0 0 24 24" fill="none"><path d="M20.8 8.9c0 5.1-8.8 10.2-8.8 10.2S3.2 14 3.2 8.9A4.5 4.5 0 0 1 12 6.4a4.5 4.5 0 0 1 8.8 2.5Z" stroke="currentColor" stroke-width="1.8"/></svg><span data-i18n="like">LIKE</span> <span data-like-count="official">0</span></button><div class="like-people-popover"></div></div>
+          <button class="feed-action" data-share><svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 13v5.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="share">SHARE</span></button>
+          <button class="feed-action" data-view="play"><svg viewBox="0 0 24 24" fill="none"><path d="M8 5.5v13l10-6.5-10-6.5Z" fill="currentColor"/></svg><span data-i18n="play_now">PLAY</span></button>
+        </div>
+      </article>
+
+      <article class="feed-card promo-box">
+        <strong data-i18n="grow_community">GROW THE CUBE RAGE COMMUNITY</strong>
+        <p data-i18n="grow_community_desc">One click is enough to share the game. Send CUBE RAGE to a friend, post it on social media or copy the page link.</p>
+        <div class="share-row">
+          <button class="share-btn" id="shareSite">↗ <span data-i18n="share_cube">SHARE CUBE RAGE</span></button>
+          <button class="share-btn" id="copySiteLink">▣ <span data-i18n="copy_link">COPY LINK</span></button>
+          <button class="share-btn" id="challengeSite">⚡ <span data-i18n="challenge">CHALLENGE A FRIEND</span></button>
+          <button class="share-btn" id="followSite">★ <span data-i18n="follow">FOLLOW CUBE RAGE</span> <em id="followCount">0</em></button>
+        </div>
+      </article>
+
+      <div id="socialNewsFeed"></div>
+    </div>
+
+    <aside class="social-side right-side">
+      <div class="social-panel promo-box">
+        <h3 data-i18n="invite_friends">INVITE FRIENDS</h3>
+        <p data-i18n="invite_desc">Challenge someone to beat your CUBE RAGE record.</p>
+        <div class="share-row">
+          <button class="share-btn" id="rightShare" data-i18n="share">SHARE</button>
+          <button class="share-btn" id="rightCopy" data-i18n="copy_link">COPY LINK</button>
+        </div>
+      </div>
+      <div class="social-panel">
+        <h3 data-i18n="latest_news">LATEST NEWS</h3>
+        <div class="feed-news-list" id="miniNewsFeed">
+          <div style="color:#666;font-size:9px">Loading…</div>
+        </div>
+      </div>
+      <div class="social-panel">
+        <h3 data-i18n="your_next_step">YOUR NEXT STEP</h3>
+        <div class="quick-list">
+          <button class="quick-link" data-view="play"><span class="qicon">▶</span> <span data-i18n="play_game">PLAY THE GAME</span></button>
+          <button class="quick-link" data-view="rating"><span class="qicon">★</span> <span data-i18n="check_ranking">CHECK RANKING</span></button>
+          <button class="quick-link" data-view="profile"><span class="qicon">●</span> <span data-i18n="create_profile">CREATE PROFILE</span></button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+</section>
+
+<section class="view" id="view-play">
+ <div class="heading"><div><h2 data-i18n="play_title">PLAY</h2><p data-i18n="play_desc">Запусти CUBE RAGE прямо у вікні.</p></div></div>
+ <div class="game-box">
+  <div class="game-toolbar">
+   <div>
+    <b data-i18n="play_cube">PLAY CUBE RAGE</b>
+    <span id="gameStatus" data-i18n="game_ready">READY TO PLAY</span>
+   </div>
+   <div class="actions">
+    <button class="btn primary" id="launchEmbedded" data-i18n="play_here">PLAY</button>
+    <button class="btn" id="fullscreenGame" type="button" data-i18n="fullscreen">⛶ FULLSCREEN</button>
+    <button class="btn" id="launchGame" data-i18n="open_itch">OPEN ITCH.IO</button>
+   </div>
+  </div>
+  <div class="game-frame-wrap" id="gameFrameWrap">
+   <div class="big-play">
+    <div>
+     <div class="kicker" data-i18n="web_build">CUBE RAGE / WEB BUILD</div>
+     <h2 data-i18n="ready">READY?</h2>
+     
+     <button class="btn primary game-start-center" id="gameStartCenter" type="button"><span class="svg-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M8 5.5v13l10-6.5-10-6.5Z" fill="currentColor"/></svg></span><span data-i18n="play_here">PLAY</span></button>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="view" id="view-rating">
+ <div class="heading"><div><h2 data-i18n="rating_title">RATING</h2><p data-i18n="rating_desc">Увійди або зареєструйся, щоб переглядати рейтинг.</p></div><button class="btn" id="refreshRating" data-i18n="refresh">REFRESH</button></div>
+ <div class="tabs">
+  <button class="tab easy active" data-mode="Easy">EASY</button>
+  <button class="tab medium" data-mode="Medium">MEDIUM</button>
+  <button class="tab hard" data-mode="Hard">HARD</button>
+ </div>
+ <input class="search" id="ratingSearch" placeholder="Search player..." data-i18n-placeholder="search_player">
+ <div id="ratingBox" class="table-wrap"><div class="loading">LOADING...</div></div>
+</section>
+
+<section class="view" id="view-news">
+ <div class="heading"><div><h2 data-i18n="news_title">NEWS</h2><p data-i18n="news_desc">Новини завантажуються з GitHub.</p></div><button class="btn" id="refreshNews" data-i18n="refresh">REFRESH</button></div>
+ <div id="newsBox" class="news-grid"></div>
+</section>
+
+<section class="view" id="view-profile">
+ <div id="authBox" class="auth-wrap">
+  <div class="card auth-card">
+   <div class="auth-tabs">
+    <button class="btn primary" id="loginTab" data-i18n="login">LOGIN</button>
+    <button class="btn" id="registerTab" data-i18n="register">REGISTER</button>
+   </div>
+   <form id="authForm">
+    <div id="nickField" class="hidden"><label data-i18n="nickname">NICKNAME</label><input id="nickname" maxlength="20"></div>
+    <label data-i18n="email">EMAIL</label><input id="email" type="email" required autocomplete="email">
+    <label data-i18n="password">PASSWORD</label><input id="password" type="password" minlength="6" required autocomplete="current-password">
+    <label class="remember-row" for="rememberMe"><input id="rememberMe" type="checkbox"><span data-i18n="remember_me">ЗАПАМ'ЯТАТИ МЕНЕ</span></label>
+    <div class="actions"><button class="btn primary" id="authSubmit" type="submit">LOGIN</button></div>
+    <div id="authMessage" class="message"></div>
+   </form>
+  </div>
+ </div>
+ <div id="profileBox" class="hidden"></div>
+</section>
+</main>
+<footer><span data-i18n="footer">CUBE RAGE © 2026 · PLAY · SHARE · COMPETE</span></footer>
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+const CONFIG={
+ apiKey:"AIzaSyBgT8gsee4WjcuWiW_JMA6ayJgawt-Dqwg",
+ database:"https://cube-rage-default-rtdb.firebaseio.com",
+ auth:"https://identitytoolkit.googleapis.com/v1",
+ game:"https://mykola-kolisnyk.itch.io/cube-rage",
+ news:"https://raw.githubusercontent.com/Cube-Rage/news/main/news.json"
+};
+const rememberStored=localStorage.getItem("cubeRageRememberMe")==="1";
+if(!rememberStored){
+ localStorage.removeItem("cubeRageSession");
+ localStorage.removeItem("cubeRageProfile");
+}
+const sessionStore=rememberStored?localStorage:sessionStorage;
+let session=JSON.parse(sessionStore.getItem("cubeRageSession")||"null");
+let cachedProfile=JSON.parse(sessionStore.getItem("cubeRageProfile")||"null");
+let rememberMe=rememberStored;
+let mode="Easy", players=[], authMode="login";
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+const n=v=>Number.isFinite(Number(v))?Number(v):0;
+const avatar=d=>typeof d?.Avatar==="string"&&d.Avatar?d.Avatar:"";
+function toast(msg,bad=false){const t=$("toast");t.textContent=msg;t.className="toast show "+(bad?"bad":"ok");clearTimeout(window._toast);window._toast=setTimeout(()=>t.className="toast",2800)}
+function requireRatingAccess(){
+ if(session && session.uid) return true;
+ const box=$("ratingBox");
+ if(box){
+  box.innerHTML=`<div class="rating-lock">
+   <div class="rating-lock-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" stroke="currentColor" stroke-width="1.8"/></svg></div>
+   <h3>${lang==="ua"?"УВІЙДИ АБО ЗАРЕЄСТРУЙСЯ":"LOGIN OR REGISTER"}</h3>
+   <p>${lang==="ua"?"Щоб переглядати рейтинг CUBE RAGE, спочатку увійди в акаунт або зареєструйся.":"Sign in or register to view the CUBE RAGE ranking."}</p>
+   <button class="btn primary" id="ratingLoginBtn">${lang==="ua"?"УВІЙТИ / ЗАРЕЄСТРУВАТИСЯ":"LOGIN / REGISTER"}</button>
+  </div>`;
+  $("ratingLoginBtn").onclick=()=>show("profile");
+ }
+ toast(lang==="ua"?"УВІЙДИ АБО ЗАРЕЄСТРУЙСЯ, ЩОБ ПЕРЕГЛЯНУТИ РЕЙТИНГ":"LOGIN OR REGISTER TO VIEW THE RANKING",true);
+ return false;
+}
+function resetEmbeddedGame(){
+ const wrap=$("gameFrameWrap"); if(!wrap)return;
+ const frame=$("gameFrame"); if(frame)frame.remove();
+ wrap.classList.remove("playing");
+ const status=$("gameStatus"); if(status)status.textContent=t("game_ready");
+}
+function show(view){
+ if(view==="rating" && !requireRatingAccess()) return;
+ if(view!=="play") resetEmbeddedGame();
+ document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
+ const el=$("view-"+view); if(!el)return;
+ el.classList.add("active");
+ document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view===view));
+ if(view==="rating")loadRating(); if(view==="news")loadNews(); if(view==="profile"){loadProfile();setTimeout(setupFollow,120)}
+ scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.view)));
+const logoHome=$("logoHome"); if(logoHome){ logoHome.addEventListener("click",()=>show("home")); logoHome.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();show("home")}}); }
+const GAME_BUILD="./game/index.html";
+function tryEmbeddedGame(){
+ const wrap=$("gameFrameWrap"),status=$("gameStatus");
+ if(!wrap)return;
+ let frame=$("gameFrame");
+ if(!frame){
+  frame=document.createElement("iframe");
+  frame.id="gameFrame"; frame.src=GAME_BUILD; frame.allow="fullscreen; autoplay; gamepad; clipboard-read; clipboard-write"; frame.allowFullscreen=true; frame.referrerPolicy="same-origin";
+  wrap.appendChild(frame);
+ }
+ wrap.classList.add("playing"); status.textContent=t("game_started");
+ toast(t("game_started"));
+}
+$("launchEmbedded").onclick=tryEmbeddedGame;
+$("gameStartCenter").onclick=tryEmbeddedGame;
+$("fullscreenGame").onclick=async()=>{const el=$("gameFrameWrap");if(!el)return;try{if(document.fullscreenElement)await document.exitFullscreen();else await el.requestFullscreen()}catch(e){toast(lang==="ua"?"FULLSCREEN НЕДОСТУПНИЙ":"FULLSCREEN UNAVAILABLE",true)}};
+$("launchGame").onclick=()=>window.open(CONFIG.game,"_blank","noopener");
+function setRatingMode(nextMode,fromHome=false){
+ mode=nextMode||"Easy";
+ document.querySelectorAll("#view-rating .tab[data-mode]").forEach(x=>x.classList.toggle("active",x.dataset.mode===mode));
+ document.querySelectorAll("#view-home .mode-card[data-mode],#view-home .mode-feed[data-mode]").forEach(x=>x.classList.remove("selected"));
+ renderRating();
+}
+document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{
+ if(!requireRatingAccess())return;
+ setRatingMode(b.dataset.mode,b.closest("#view-home")!==null);
+ show("rating");
+});
+$("ratingSearch").oninput=renderRating;
+$("refreshRating").onclick=loadRating;
+$("refreshNews").onclick=loadNews;
+
+function setAuthMode(x){
+ authMode=x;
+ $("loginTab").classList.toggle("primary",x==="login");
+ $("registerTab").classList.toggle("primary",x==="register");
+ $("nickField").classList.toggle("hidden",x==="login");
+ $("authSubmit").textContent=x==="login"?"LOGIN":"REGISTER";
+ $("authMessage").textContent="";
+ $("password").autocomplete=x==="login"?"current-password":"new-password";
+}
+$("loginTab").onclick=()=>setAuthMode("login");
+$("registerTab").onclick=()=>setAuthMode("register");
+
+async function authRequest(endpoint,body){
+ const r=await fetch(CONFIG.auth+"/"+endpoint+"?key="+encodeURIComponent(CONFIG.apiKey),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+ const d=await r.json(); if(!r.ok)throw new Error(d?.error?.message||"AUTH_ERROR"); return d;
+}
+async function db(path,opts={}){
+ const url=CONFIG.database+"/"+path+".json"+(session?.idToken?("?auth="+encodeURIComponent(session.idToken)):"");
+ const r=await fetch(url,{...opts,headers:{"Content-Type":"application/json",...(opts.headers||{})}});
+ const d=await r.json(); if(!r.ok)throw new Error(d?.error||"DATABASE_ERROR"); return d;
+}
+function authError(e){
+ const m=String(e.message||e);
+ const ua={
+  EMAIL_EXISTS:"Цей email вже зареєстрований.",INVALID_LOGIN_CREDENTIALS:"Невірний email або пароль.",INVALID_EMAIL:"Невірний email.",WEAK_PASSWORD:"Пароль має містити щонайменше 6 символів.",EMAIL_NOT_FOUND:"Невірний email або пароль.",INVALID_PASSWORD:"Невірний email або пароль.",OPERATION_NOT_ALLOWED:"У Firebase не увімкнено Email/Password.",TOO_MANY_ATTEMPTS_TRY_LATER:"Забагато спроб. Спробуй пізніше."
+ };
+ const en={
+  EMAIL_EXISTS:"This email is already registered.",INVALID_LOGIN_CREDENTIALS:"Invalid email or password.",INVALID_EMAIL:"Invalid email.",WEAK_PASSWORD:"Password must contain at least 6 characters.",EMAIL_NOT_FOUND:"Invalid email or password.",INVALID_PASSWORD:"Invalid email or password.",OPERATION_NOT_ALLOWED:"Firebase Email/Password sign-in is not enabled.",TOO_MANY_ATTEMPTS_TRY_LATER:"Too many attempts. Try again later."
+ };
+ return (lang==="ua"?ua:en)[m]||m;
+}
+function persistAuth(data,profile=null,remember=rememberMe){
+ localStorage.removeItem("cubeRageSession");
+ localStorage.removeItem("cubeRageProfile");
+ sessionStorage.removeItem("cubeRageSession");
+ sessionStorage.removeItem("cubeRageProfile");
+ const store=remember?localStorage:sessionStorage;
+ store.setItem("cubeRageSession",JSON.stringify(data));
+ if(profile)store.setItem("cubeRageProfile",JSON.stringify(profile));
+ if(remember)localStorage.setItem("cubeRageRememberMe","1");
+ else localStorage.removeItem("cubeRageRememberMe");
+}
+function persistProfile(profile){
+ cachedProfile=profile;
+ const store=rememberMe?localStorage:sessionStorage;
+ store.setItem("cubeRageProfile",JSON.stringify(profile));
+}
+
+async function login(email,password){
+ const d=await authRequest("accounts:signInWithPassword",{email,password,returnSecureToken:true});
+ session={idToken:d.idToken,refreshToken:d.refreshToken,uid:d.localId,email:d.email};
+ persistAuth(session,null,rememberMe);
+}
+async function register(nickname,email,password){
+ const d=await authRequest("accounts:signUp",{email,password,returnSecureToken:true});
+ session={idToken:d.idToken,refreshToken:d.refreshToken,uid:d.localId,email:d.email};
+ persistAuth(session,null,rememberMe);
+ await db("Players/"+encodeURIComponent(session.uid),{method:"PUT",body:JSON.stringify({
+  AccountID:session.uid,Nickname:nickname,Email:email,Avatar:"",
+  Coins:0,Level:1,Points_Progress:0,Progress:0,Games_Played:0,
+  Record_Easy:0,Record_Medium:0,Record_Hard:0
+ })});
+}
+$("authForm").onsubmit=async e=>{
+ e.preventDefault(); const msg=$("authMessage");msg.textContent=t("connect");
+ try{
+  const email=$("email").value.trim(),password=$("password").value,nick=$("nickname").value.trim();
+  rememberMe=$("rememberMe").checked;
+  if(authMode==="register"){if(!nick)throw new Error(t("enter_nickname"));await register(nick,email,password);toast(t("account_created"))}
+  else{await login(email,password);toast(t("login_success"))}
+  msg.textContent="";updateHeader();likePeopleCache.official=null;await loadProfile();await setupFollow();setupLikes();show("profile");
+ }catch(e){msg.textContent=authError(e);toast(authError(e),true)}
+};
+async function logout(){localStorage.removeItem("cubeRageSession");localStorage.removeItem("cubeRageProfile");localStorage.removeItem("cubeRageRememberMe");sessionStorage.removeItem("cubeRageSession");sessionStorage.removeItem("cubeRageProfile");session=null;cachedProfile=null;rememberMe=false;updateHeader();$("profileBox").classList.add("hidden");$("authBox").classList.remove("hidden");toast(t("logout_done"));show("home")}
+function updateHeader(){
+ const logged=!!session;
+ const profile=cachedProfile||{};
+ const name=profile.Nickname||profile.nickname||(logged?(session.email||"PLAYER").split("@")[0]:"GUEST");
+ const av=avatar(profile);
+ $("userName").textContent=name;
+ $("profileNav").textContent=logged?(lang==="ua"?"ПРОФІЛЬ":"PROFILE"):(lang==="ua"?"УВІЙТИ":"LOGIN");
+ if(av){$("userAvatar").src=av;$("userAvatar").classList.remove("hidden")}
+ else{$("userAvatar").removeAttribute("src");$("userAvatar").classList.add("hidden")}
+}
+function compressAvatar(file){
+ return new Promise((resolve,reject)=>{
+  if(file.size>10*1024*1024){reject(new Error("IMAGE_TOO_LARGE"));return}
+  const reader=new FileReader();
+  reader.onerror=()=>reject(new Error("IMAGE_READ_ERROR"));
+  reader.onload=()=>{
+   const img=new Image();
+   img.onerror=()=>reject(new Error("IMAGE_DECODE_ERROR"));
+   img.onload=()=>{
+    const s=256,r=72;
+    const c=document.createElement("canvas");
+    c.width=s;c.height=s;
+    const x=c.getContext("2d");
+    x.imageSmoothingEnabled=true;
+    x.imageSmoothingQuality="high";
+
+    x.beginPath();
+    x.moveTo(r,0);
+    x.lineTo(s-r,0);
+    x.quadraticCurveTo(s,0,s,r);
+    x.lineTo(s,s-r);
+    x.quadraticCurveTo(s,s,s-r,s);
+    x.lineTo(r,s);
+    x.quadraticCurveTo(0,s,0,s-r);
+    x.lineTo(0,r);
+    x.quadraticCurveTo(0,0,r,0);
+    x.closePath();
+    x.clip();
+
+    const m=Math.min(img.naturalWidth,img.naturalHeight);
+    const sx=(img.naturalWidth-m)/2;
+    const sy=(img.naturalHeight-m)/2;
+
+    x.drawImage(img,sx,sy,m,m,0,0,s,s);
+    resolve(c.toDataURL("image/jpeg",0.95));
+   };
+   img.src=reader.result;
+  };
+  reader.readAsDataURL(file);
+ });
+}
+
+async function loadProfile(){
+ if(!session){$("authBox").classList.remove("hidden");$("profileBox").classList.add("hidden");return}
+ $("authBox").classList.add("hidden");$("profileBox").classList.remove("hidden");$("profileBox").innerHTML=`<div class="card loading">${esc(t("loading_profile"))}</div>`;
+ try{
+  const d=await db("Players/"+encodeURIComponent(session.uid))||{};
+  cachedProfile=d;
+  persistProfile(d);
+  const av=avatar(d),nick=d.Nickname||session.email.split("@")[0];
+  $("userName").textContent=nick;
+  if(av){$("userAvatar").src=av;$("userAvatar").classList.remove("hidden")}
+  $("profileBox").innerHTML=`
+   <div class="profile-shell">
+    <div class="profile-cover"><div class="profile-cover-glow"></div><span class="profile-cover-label" data-i18n="official_badge">OFFICIAL COMMUNITY</span></div>
+    <div class="profile-grid profile-grid-polished">
+     <div class="card profile-card profile-card-polished">
+      <div class="profile-avatar-wrap">${av?`<img class="avatar-big" id="profileAvatar" src="${esc(av)}" alt="">`:`<div class="avatar-big avatar-placeholder" id="profileAvatar"><span>${esc((nick||"P").charAt(0).toUpperCase())}</span></div>`}<span class="online-dot"></span></div>
+      <div class="profile-identity"><h3>${esc(nick)}</h3><p>${esc(d.Email||session.email)}</p></div>
+      <div class="profile-badges"><span>${esc(t("player_badge"))}</span><span>${esc(t("member_badge"))}</span></div>
+      <div class="profile-follow-stat"><b id="profileFollowerCount">0</b><span data-i18n="followers">FOLLOWERS</span></div>
+      <div class="avatar-actions">
+       <input id="avatarFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+       <button class="btn avatar-btn" id="changeAvatar" type="button">${esc(t("change_avatar"))}</button>
+       <button class="btn red" id="logout" type="button">${esc(t("logout"))}</button>
+      </div>
+     </div>
+     <div class="profile-main-column">
+      <div class="card profile-stats-card"><div class="profile-section-title"><div><span data-i18n="your_profile">YOUR PROFILE</span><h3 data-i18n="statistics">STATISTICS</h3></div><span class="profile-status"><i></i> <span data-i18n="online">ONLINE</span></span></div><div class="stats stats-polished">
+       ${stat(t("level"),d.Level)}${stat(t("coins"),d.Coins)}${stat(t("games_played"),d.Games_Played)}${stat(t("easy_record"),d.Record_Easy)}${stat(t("medium_record"),d.Record_Medium)}${stat(t("hard_record"),d.Record_Hard)}
+      </div></div>
+      <div class="card profile-progress-card"><div class="profile-section-title"><div><span data-i18n="progress_label">PROGRESS</span><h3 data-i18n="keep_raging">KEEP RAGING</h3></div><strong>${n(d.Progress)}%</strong></div><div class="profile-progress"><span style="width:${Math.max(0,Math.min(100,n(d.Progress)))}%"></span></div><p data-i18n="progress_desc">Keep playing to improve your records and unlock your next milestones.</p></div>
+     </div>
+    </div>
+   </div>`;
+  $("logout").onclick=logout;
+
+  const avatarFile=$("avatarFile"), changeAvatar=$("changeAvatar");
+  changeAvatar.onclick=()=>avatarFile.click();
+
+  avatarFile.onchange=async()=>{
+    const file=avatarFile.files?.[0];
+    if(!file)return;
+    if(!/^image\//.test(file.type)){
+      toast(t("select_image"),true);
+      return;
+    }
+    try{
+      changeAvatar.disabled=true;
+      changeAvatar.textContent=t("uploading");
+      const dataUrl=await compressAvatar(file);
+      await db("Players/"+encodeURIComponent(session.uid)+"/Avatar",{
+        method:"PUT",
+        body:JSON.stringify(dataUrl)
+      });
+      cachedProfile={...d,Avatar:dataUrl};
+      persistProfile(cachedProfile);
+      $("profileAvatar").outerHTML=`<img class="avatar-big" id="profileAvatar" src="${esc(dataUrl)}" alt="">`;
+      $("userAvatar").src=dataUrl;
+      $("userAvatar").classList.remove("hidden");
+      toast(t("avatar_updated"));
+    }catch(e){
+      toast(t("avatar_failed")+e.message,true);
+    }finally{
+      changeAvatar.disabled=false;
+      changeAvatar.textContent=t("change_avatar");
+      avatarFile.value="";
+    }
+  };
+ }catch(e){
+  $("profileBox").innerHTML=`<div class="card loading err">${esc(e.message)}<br><br>${esc(t("firebase_rules"))}</div>`;
+ }
+}
+function stat(k,v){return `<div class="stat"><span>${k}</span><b>${n(v)}</b></div>`}
+
+async function loadRating(){
+ if(!requireRatingAccess()) return;
+ $("ratingBox").innerHTML=`<div class="loading">${esc(t("loading_rating"))}</div>`;
+ try{
+  const data=await db("Players")||{};
+  players=Object.entries(data).filter(([,d])=>d&&typeof d==="object").map(([uid,d])=>({uid,...d}));
+  renderRating();
+ }catch(e){
+  $("ratingBox").innerHTML=`<div class="loading err"><b>${esc(t("rating_error"))}</b><br><br>${esc(e.message)}<br><br>${esc(t("firebase_rules"))}</div>`;
+ }
+}
+function renderRating(){
+ const field=mode==="Easy"?"Record_Easy":mode==="Medium"?"Record_Medium":"Record_Hard";
+ const q=$("ratingSearch").value.trim().toLowerCase();
+ const sorted=players.slice().sort((a,b)=>n(b[field])-n(a[field])||String(a.Nickname||"").localeCompare(String(b.Nickname||"")));
+ const rows=sorted.filter(d=>String(d.Nickname||"PLAYER").toLowerCase().includes(q)).slice(0,100);
+ if(!rows.length){$("ratingBox").innerHTML=`<div class="empty">${esc(t("no_players"))}</div>`;return}
+ $("ratingBox").innerHTML=`<table><thead><tr><th>#</th><th>${esc(t("player"))}</th><th>${esc(t("level"))}</th><th>${mode.toUpperCase()} ${esc(t("record"))}</th></tr></thead><tbody>${rows.map((d,i)=>{
+  const rank=sorted.indexOf(d)+1,av=avatar(d),me=session&&d.uid===session.uid;
+  return `<tr class="${me?"me":""}"><td><b>${rank}</b></td><td><div class="player">${av?`<img src="${esc(av)}" alt="">`:`<img src="" alt="">`}<span>${esc(d.Nickname||"PLAYER")}</span></div></td><td>${n(d.Level)}</td><td class="score">${n(d[field])}</td></tr>`;
+ }).join("")}</tbody></table>`;
+}
+
+async function loadNews(){
+ const box=$("newsBox");box.innerHTML=`<div class="card loading">${esc(t("loading_news"))}</div>`;
+ try{
+  const r=await fetch(CONFIG.news+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("NEWS_HTTP_"+r.status);
+  const raw=await r.json(),items=Array.isArray(raw)?raw:(Array.isArray(raw.news)?raw.news:Object.values(raw||{}));
+  if(!items.length)throw new Error("NO_NEWS");
+  renderMiniNews(items);
+  renderSocialNews(items);
+  box.innerHTML=items.slice(0,12).map((x,i)=>{
+ const title=x.title||x.name||"CUBE RAGE";
+ const text=x.text||x.description||x.content||"";
+ const image=x.image||x.imageUrl||x.cover||"";
+ const date=x.date||x.published||"";
+ return `<article class="card news-card ${i===0?"featured":""}">
+   ${image?`<img class="news-img" src="${esc(image)}" alt="">`:""}
+   <div class="news-date">${esc(date)}</div>
+   <h3>${esc(title)}</h3>
+   <p>${esc(text)}</p>
+ </article>`;
+}).join("");
+ }catch(e){box.innerHTML=`<div class="card loading">${esc(t("news_error"))}</div>`;renderMiniNews([])}
+}
+
+const I18N={
+ ua:{
+  nav_home:"ГОЛОВНА",nav_play:"ГРАТИ",nav_rating:"РЕЙТИНГ",nav_news:"НОВИНИ",nav_profile:"УВІЙТИ / ПРОФІЛЬ",
+  official:"CUBE RAGE / ОФІЦІЙНИЙ САЙТ",official_now:"ОФІЦІЙНА СТОРІНКА ГРИ · ЗАРАЗ",official_badge:"ОФІЦІЙНО",
+  hero_desc:"Швидка аркадна гра: грай, виживай і бий власні рекорди. Рейтинг доступний авторизованим гравцям. Увійди або зареєструйся, щоб переглядати результати.",
+  play_now:"ГРАТИ",game_started:"ГРУ ЗАПУЩЕНО",view_ranking:"ПЕРЕГЛЯНУТИ РЕЙТИНГ",view_ranking_short:"ПЕРЕГЛЯНУТИ →",public_ranking:"ВІДКРИТИЙ РЕЙТИНГ",your_profile:"ТВІЙ ПРОФІЛЬ",no_p2w:"БЕЗ PAY-TO-WIN",top_records:"ТОП РЕКОРДИ",
+  play_title:"ГРАТИ",fullscreen:"⛶ ПОВНИЙ ЕКРАН",play_desc:"Запусти CUBE RAGE прямо у цьому вікні.",play_cube:"ГРАТИ CUBE RAGE",game_ready:"ГОТОВО ДО ЗАПУСКУ",play_here:"ГРАТИ",open_itch:"ВІДКРИТИ ITCH.IO",web_build:"CUBE RAGE / WEB BUILD",ready:"ГОТОВИЙ?",game_local_desc:"Гра запускається у цьому вікні з папки game/ поруч із index.html.",
+  rating_title:"РЕЙТИНГ",rating_desc:"Порівнюй результати гравців і шукай свій рекорд.",news_title:"НОВИНИ",news_desc:"Останні новини та оновлення CUBE RAGE.",refresh:"ОНОВИТИ",login:"УВІЙТИ",register:"РЕЄСТРАЦІЯ",email:"EMAIL",password:"ПАРОЛЬ",nickname:"НІКНЕЙМ",remember_me:"ЗАПАМ'ЯТАТИ МЕНЕ",search_player:"Пошук гравця...",
+  profile_short:"ПРОФІЛЬ",discover:"ВІДКРИЙ",fast_arcade:"ШВИДКА АРКАДА",fast_arcade_desc:"Короткі сесії та миттєвий рестарт.",your_record:"ТВІЙ РЕКОРД",your_record_desc:"Грай ще раз і покращуй особистий результат.",community:"СПІЛЬНОТА",community_desc:"Ділись грою та кидай виклик друзям.",social_headline:"ГРАЙ. ВИЖИВАЙ. БИЙ СВІЙ РЕКОРД.",social_desc:"Обирай складність, піднімай рахунок і перевіряй, наскільки далеко зможеш зайти.",starter_run:"СТАРТОВИЙ РАУНД",more_pressure:"БІЛЬШЕ ТИСКУ",full_rage:"ПОВНИЙ RAGE",like:"ВПОДОБАТИ",share:"ПОШИРИТИ",grow_community:"РОЗВИВАЙ СПІЛЬНОТУ CUBE RAGE",grow_community_desc:"Поділись грою з другом, опублікуй її у соцмережі або просто скопіюй посилання.",share_cube:"ПОШИРИТИ CUBE RAGE",copy_link:"СКОПІЮВАТИ ПОСИЛАННЯ",invite_friends:"ЗАПРОСИ ДРУЗІВ",invite_desc:"Кинь виклик другу та дізнайся, хто набере більше.",latest_news:"ОСТАННІ НОВИНИ",your_next_step:"ТВОЄ НАСТУПНЕ",play_game:"ГРАТИ",check_ranking:"ПЕРЕГЛЯНУТИ РЕЙТИНГ",create_profile:"СТВОРИТИ ПРОФІЛЬ",footer:"CUBE RAGE © 2026 · ГРАЙ · ПОШИРЮЙ · ЗМАГАЙСЯ",challenge:"КИНУТИ ВИКЛИК ДРУГУ",follow:"СТЕЖИТИ ЗА CUBE RAGE",following:"ВИ СТЕЖИТЕ",unfollowed:"ВИ ВІДПИСАЛИСЯ",challenge_sent:"ВИКЛИК ВІДПРАВЛЕНО",challenge_copied:"ПОСИЛАННЯ-ВИКЛИК СКОПІЙОВАНО",sharing_failed:"НЕ ВДАЛОСЯ ПОШИРИТИ",menu:"Меню",player:"ГРАВЕЦЬ",level:"РІВЕНЬ",record:"РЕКОРД",connect:"ПІДКЛЮЧЕННЯ...",account_created:"АКАУНТ СТВОРЕНО",login_success:"УСПІШНИЙ ВХІД",logout_done:"ВИХІД ВИКОНАНО",enter_nickname:"Вкажи нікнейм",select_image:"ОБЕРИ ЗОБРАЖЕННЯ",uploading:"ЗАВАНТАЖЕННЯ...",avatar_updated:"АВАТАР ОНОВЛЕНО",avatar_failed:"НЕ ВДАЛОСЯ ЗМІНИТИ АВАТАР: ",change_avatar:"ЗМІНИТИ АВАТАР",loading_profile:"ЗАВАНТАЖЕННЯ ПРОФІЛЮ...",loading_rating:"ЗАВАНТАЖЕННЯ РЕЙТИНГУ...",no_players:"ГРАВЦІВ НЕМАЄ",loading_news:"ЗАВАНТАЖЕННЯ НОВИН...",no_news:"НОВИН ПОКИ НЕМАЄ",news_error:"НОВИНИ ЩЕ НЕ НАЛАШТОВАНІ",firebase_rules:"Firebase Rules мають дозволяти public read для Players.",rating_error:"ПОМИЛКА РЕЙТИНГУ",statistics:"СТАТИСТИКА",your_profile:"ТВІЙ ПРОФІЛЬ",online:"ОНЛАЙН",followers:"ПІДПИСНИКИ",player_badge:"ГРАВЕЦЬ",member_badge:"УЧАСНИК",level:"РІВЕНЬ",coins:"МОНЕТИ",games_played:"ІГОР ЗІГРАНО",easy_record:"РЕКОРД EASY",medium_record:"РЕКОРД MEDIUM",hard_record:"РЕКОРД HARD",progress_label:"ПРОГРЕС",keep_raging:"ПРОДОВЖУЙ ГРАТИ",progress_desc:"Грай далі, покращуй рекорди та відкривай нові результати.",logout:"ВИЙТИ",follow_error:"НЕ ВДАЛОСЯ ОНОВИТИ ПІДПИСКУ"
+ },
+ en:{
+  nav_home:"HOME",nav_play:"PLAY",nav_rating:"RANKING",nav_news:"NEWS",nav_profile:"LOGIN / PROFILE",
+  official:"CUBE RAGE / OFFICIAL WEBSITE",official_now:"OFFICIAL GAME PAGE · NOW",official_badge:"OFFICIAL",
+  hero_desc:"A fast arcade game: play, survive and beat your own records. The ranking is available to players with an account.",
+  play_now:"PLAY NOW",game_started:"GAME STARTED",view_ranking:"VIEW RANKING",view_ranking_short:"VIEW →",public_ranking:"PUBLIC RANKING",your_profile:"YOUR PROFILE",no_p2w:"NO PAY-TO-WIN",top_records:"TOP RECORDS",
+  play_title:"PLAY",fullscreen:"⛶ FULLSCREEN",play_desc:"Launch CUBE RAGE directly inside this window.",play_cube:"PLAY CUBE RAGE",game_ready:"READY TO PLAY",play_here:"PLAY",open_itch:"OPEN ITCH.IO",web_build:"CUBE RAGE / WEB BUILD",ready:"READY?",game_local_desc:"The game launches in this window from the game/ folder next to index.html.",
+  rating_title:"RANKING",rating_desc:"Compare players, chase records and find your place on the leaderboard.",news_title:"NEWS",news_desc:"Latest CUBE RAGE news and updates.",refresh:"REFRESH",login:"LOGIN",register:"REGISTER",email:"EMAIL",password:"PASSWORD",nickname:"NICKNAME",remember_me:"REMEMBER ME",search_player:"Search player...",
+  profile_short:"PROFILE",discover:"DISCOVER",fast_arcade:"FAST ARCADE",fast_arcade_desc:"Short sessions and instant restart.",your_record:"YOUR RECORD",your_record_desc:"Play again and improve your personal score.",community:"COMMUNITY",community_desc:"Share the game and challenge friends.",social_headline:"PLAY. SURVIVE. BEAT YOUR RECORD.",social_desc:"Choose your difficulty, push your score higher and see how far you can go.",starter_run:"STARTER RUN",more_pressure:"MORE PRESSURE",full_rage:"FULL RAGE",like:"LIKE",share:"SHARE",grow_community:"GROW THE CUBE RAGE COMMUNITY",grow_community_desc:"Share the game with a friend, post it on social media or copy the page link.",share_cube:"SHARE CUBE RAGE",copy_link:"COPY LINK",invite_friends:"INVITE FRIENDS",invite_desc:"Challenge a friend and find out who can score higher.",latest_news:"LATEST NEWS",your_next_step:"YOUR NEXT STEP",play_game:"PLAY THE GAME",check_ranking:"CHECK RANKING",create_profile:"CREATE PROFILE",footer:"CUBE RAGE © 2026 · PLAY · SHARE · COMPETE",challenge:"CHALLENGE A FRIEND",follow:"FOLLOW CUBE RAGE",following:"FOLLOWING",unfollowed:"UNFOLLOWED",challenge_sent:"CHALLENGE SENT",challenge_copied:"CHALLENGE LINK COPIED",sharing_failed:"SHARING FAILED",menu:"Menu",player:"PLAYER",level:"LEVEL",record:"RECORD",connect:"CONNECTING...",account_created:"ACCOUNT CREATED",login_success:"SUCCESSFUL LOGIN",logout_done:"LOGGED OUT",enter_nickname:"Enter a nickname",select_image:"SELECT AN IMAGE",uploading:"UPLOADING...",avatar_updated:"AVATAR UPDATED",avatar_failed:"AVATAR UPDATE FAILED: ",change_avatar:"CHANGE AVATAR",loading_profile:"LOADING PROFILE...",loading_rating:"LOADING RANKING...",no_players:"NO PLAYERS",loading_news:"LOADING NEWS...",no_news:"NO NEWS YET",news_error:"NEWS IS NOT CONFIGURED YET",firebase_rules:"Firebase Rules must allow public read for Players.",rating_error:"RANKING ERROR",statistics:"STATISTICS",your_profile:"YOUR PROFILE",online:"ONLINE",followers:"FOLLOWERS",player_badge:"PLAYER",member_badge:"MEMBER",level:"LEVEL",coins:"COINS",games_played:"GAMES PLAYED",easy_record:"EASY RECORD",medium_record:"MEDIUM RECORD",hard_record:"HARD RECORD",progress_label:"PROGRESS",keep_raging:"KEEP RAGING",progress_desc:"Keep playing to improve your records and unlock your next milestones.",logout:"LOG OUT",follow_error:"FOLLOW UPDATE FAILED",login_to_like:"УВІЙДИ В АКАУНТ, ЩОБ ВПОДОБАТИ"
+ }
+};
+let lang=localStorage.getItem("cubeRageLang")||"ua";
+function t(key,fallback=""){return I18N[lang]?.[key]??fallback??key}
+function applyLang(){
+ const d=I18N[lang];
+ document.querySelectorAll("[data-i18n]").forEach(el=>{if(d[el.dataset.i18n])el.textContent=d[el.dataset.i18n]});
+ document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{if(d[el.dataset.i18nPlaceholder])el.placeholder=d[el.dataset.i18nPlaceholder]});
+ document.querySelectorAll("[data-i18n-aria]").forEach(el=>{if(d[el.dataset.i18nAria])el.setAttribute("aria-label",d[el.dataset.i18nAria])});
+ $("langUA").classList.toggle("active",lang==="ua");
+ $("langEN").classList.toggle("active",lang==="en");
+ document.documentElement.lang=lang==="ua"?"uk":"en";
+ $("authSubmit").textContent=authMode==="login"?t("login"):t("register");
+ updateHeader();
+}
+
+function setLang(x){lang=x;localStorage.setItem("cubeRageLang",x);applyLang();loadNews();setupLikes();setupFollow();if(session)loadProfile();}
+$("langUA").onclick=()=>setLang("ua");
+$("langEN").onclick=()=>setLang("en");
+applyLang();
+
+setAuthMode("login");updateHeader();loadNews();
+if(new URLSearchParams(location.search).get("challenge")==="1"){setTimeout(()=>socialToast(lang==="ua"?"ТЕБЕ ВИКЛИКАЛИ У CUBE RAGE ⚡":"YOU WERE CHALLENGED IN CUBE RAGE ⚡"),450)}
+
+const mobileMenuBtn=document.getElementById("mobileMenuBtn");
+const mobileNav=document.getElementById("mobileNav");
+if(mobileMenuBtn&&mobileNav){
+  mobileMenuBtn.addEventListener("click",()=>{
+    const open=mobileNav.classList.toggle("open");
+    mobileMenuBtn.setAttribute("aria-expanded",open?"true":"false");
+  });
+  mobileNav.querySelectorAll("[data-page]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      if(typeof show==="function") show(btn.dataset.page==="auth"?"profile":btn.dataset.page);
+      mobileNav.classList.remove("open");
+      mobileMenuBtn.setAttribute("aria-expanded","false");
+    });
+  });
+}
+window.addEventListener("resize",()=>{
+  if(window.innerWidth>900 && mobileNav){
+    mobileNav.classList.remove("open");
+    mobileMenuBtn?.setAttribute("aria-expanded","false");
+  }
+});
+
+
+/* CUBE RAGE social layer */
+function socialToast(message){
+  let el=document.getElementById("socialToast");
+  if(!el){el=document.createElement("div");el.id="socialToast";el.className="share-toast";document.body.appendChild(el)}
+  el.textContent=message;el.classList.add("show");clearTimeout(window._socialToast);window._socialToast=setTimeout(()=>el.classList.remove("show"),2200);
+}
+async function shareCubeRage(){
+  const shareData={title:"CUBE RAGE",text:"Play CUBE RAGE — beat your record and challenge your friends!",url:window.location.href};
+  try{
+    if(navigator.share){await navigator.share(shareData);socialToast(lang==="ua"?"ПОСИЛАННЯ ВІДКРИТО ДЛЯ ПОШИРЕННЯ":"SHARE SHEET OPENED");}
+    else{await navigator.clipboard.writeText(window.location.href);socialToast(lang==="ua"?"ПОСИЛАННЯ СКОПІЙОВАНО":"LINK COPIED");}
+  }catch(e){if(e?.name!=="AbortError")socialToast(lang==="ua"?"НЕ ВДАЛОСЯ ПОШИРИТИ":"SHARING FAILED")}
+}
+async function copyCubeRageLink(){
+ try{await navigator.clipboard.writeText(window.location.href);socialToast(lang==="ua"?"ПОСИЛАННЯ СКОПІЙОВАНО":"LINK COPIED");}
+ catch(e){socialToast(lang==="ua"?"СКОПІЮЙ ПОСИЛАННЯ З АДРЕСНОГО РЯДКА":"COPY THE URL FROM THE ADDRESS BAR")}
+}
+async function challengeCubeRage(){
+ const url=new URL(window.location.href);
+ url.searchParams.set("challenge","1");
+ const shareData={title:"CUBE RAGE Challenge",text:lang==="ua"?"Я кидаю тобі виклик у CUBE RAGE. Зможеш побити мій рекорд?":"I challenge you in CUBE RAGE. Can you beat my record?",url:url.toString()};
+ try{
+  if(navigator.share){await navigator.share(shareData);socialToast(t("challenge_sent",lang==="ua"?"ВИКЛИК ВІДПРАВЛЕНО":"CHALLENGE SENT"));}
+  else{await navigator.clipboard.writeText(url.toString());socialToast(t("challenge_copied",lang==="ua"?"ПОСИЛАННЯ-ВИКЛИК СКОПІЙОВАНО":"CHALLENGE LINK COPIED"));}
+ }catch(e){if(e?.name!=="AbortError")socialToast(t("sharing_failed",lang==="ua"?"НЕ ВДАЛОСЯ ПОШИРИТИ":"SHARING FAILED"))}
+}
+async function setupFollow(){
+ const b=document.getElementById("followSite");if(!b)return;
+ const countEl=document.getElementById("followCount");
+ const path="Followers/CUBE RAGE";
+ let followers=[];
+ const render=()=>{
+  const following=!!session?.uid && followers.some(x=>x.uid===session.uid || decodeURIComponent(String(x.uid))===String(session.uid));
+  b.classList.toggle("following",following);
+  const span=b.querySelector("span");if(span)span.textContent=following?t("following"):t("follow");
+  if(countEl)countEl.textContent=String(followers.length);
+  const pc=document.getElementById("profileFollowerCount");if(pc)pc.textContent=String(followers.length);
+ };
+ try{
+  const data=await db(path);
+  followers=Object.entries(data||{}).filter(([,v])=>v&&typeof v==="object").map(([uid,v])=>({uid,...v}));
+ }catch(e){followers=[];}
+ render();
+ b.onclick=async()=>{
+  if(!session?.uid){socialToast(lang==="ua"?"УВІЙДИ, ЩОБ СТЕЖИТИ ЗА CUBE RAGE":"LOG IN TO FOLLOW CUBE RAGE");show("profile");return;}
+  b.disabled=true;
+  try{
+   const uid=encodeURIComponent(session.uid);
+   const following=followers.some(x=>x.uid===session.uid || decodeURIComponent(String(x.uid))===String(session.uid));
+   if(following){await db(path+"/"+uid,{method:"DELETE"});followers=followers.filter(x=>x.uid!==session.uid&&decodeURIComponent(String(x.uid))!==String(session.uid));}
+   else{const p=cachedProfile||{};const name=p.Nickname||p.nickname||session.email.split("@")[0];await db(path+"/"+uid,{method:"PUT",body:JSON.stringify({Nickname:name,Avatar:avatar(p),At:Date.now()})});followers.push({uid:session.uid,Nickname:name,Avatar:avatar(p),At:Date.now()});}
+   render();socialToast(following?t("unfollowed"):t("following"));
+  }catch(e){socialToast(t("follow_error"),true)}finally{b.disabled=false;}
+ };
+}
+
+const likePeopleCache={};
+function likePath(key){return "Likes/Official website";}
+function normalizeLikes(data){
+ return Object.entries(data||{}).filter(([,v])=>v&&typeof v==="object").map(([uid,v])=>({uid,...v}));
+}
+function renderLikePeople(popover,likes){
+ if(!popover)return;
+ const title=lang==="ua"?"ВПОДОБАЛИ ГРАВЦІ":"LIKED BY PLAYERS";
+ if(!likes.length){popover.innerHTML=`<div class="like-people-title">${title}</div><div class="like-empty">${lang==="ua"?"Поки ніхто не вподобав.":"Nobody has liked it yet."}</div>`;return;}
+ popover.innerHTML=`<div class="like-people-title">${title} · ${likes.length}</div><div class="like-people-list">${likes.slice(0,40).map(x=>{
+  const name=esc(x.Nickname||x.nickname||"PLAYER");
+  const av=avatar(x);
+  return `<span class="like-person">${av?`<img src="${esc(av)}" alt="">`:`<span class="like-person-avatar"></span>`}<span>${name}</span></span>`;
+ }).join("")}${likes.length>40?`<span class="like-empty">+${likes.length-40}</span>`:""}</div>`;
+}
+async function loadLikes(key,button,count,popover){
+ try{
+  const data=await db(likePath(key));
+  const likes=normalizeLikes(data);
+  likePeopleCache[key]=likes;
+  if(count)count.textContent=String(likes.length);
+  const liked=!!session?.uid && likes.some(x=>x.uid===session.uid || decodeURIComponent(String(x.uid))===String(session.uid));
+  button.classList.toggle("liked",liked);
+  button.dataset.liked=liked?"1":"0";
+  renderLikePeople(popover,likes);
+  return likes;
+ }catch(e){
+  if(count)count.textContent="0";
+  if(popover)renderLikePeople(popover,[]);
+  return [];
+ }
+}
+async function toggleLike(key,button,count,popover){
+ if(!session?.uid){
+  toast(t("login_to_like",lang==="ua"?"УВІЙДИ В АКАУНТ, ЩОБ ВПОДОБАТИ":"LOGIN TO LIKE"),true);
+  show("profile");
+  return;
+ }
+ button.disabled=true;
+ try{
+  const uid=encodeURIComponent(session.uid);
+  const path=likePath(key)+"/"+uid;
+  const currentlyLiked=button.dataset.liked==="1";
+  if(currentlyLiked){
+   await db(path,{method:"DELETE"});
+  }else{
+   const profile=cachedProfile||{};
+   await db(path,{method:"PUT",body:JSON.stringify({Nickname:profile.Nickname||profile.nickname||session.email.split("@")[0],Avatar:avatar(profile),At:Date.now()})});
+  }
+  await loadLikes(key,button,count,popover);
+ }catch(e){
+  const msg=String(e.message||e);
+  const hint=msg.includes("Permission denied")?(lang==="ua"?" Firebase Rules не дозволяють запис у Likes/$key/$uid.":" Firebase Rules deny writes to Likes/$key/$uid."):"";
+  toast((lang==="ua"?"НЕ ВДАЛОСЯ ЗМІНИТИ ВПОДОБАННЯ: ":"LIKE UPDATE FAILED: ")+msg+hint,true);
+ }finally{button.disabled=false;}
+}
+function setupLikes(){
+  document.querySelectorAll("[data-like]").forEach(button=>{
+   const key=button.dataset.like;
+   const count=document.querySelector(`[data-like-count="${key}"]`);
+   let popover=button.parentElement?.querySelector(".like-people-popover");
+   if(!popover){popover=document.createElement("div");popover.className="like-people-popover";button.parentElement?.appendChild(popover)}
+   button.dataset.liked="0";
+   const open=()=>{popover.classList.add("show");if(!likePeopleCache[key])loadLikes(key,button,count,popover);else renderLikePeople(popover,likePeopleCache[key])};
+   const close=()=>popover.classList.remove("show");
+   button.onclick=e=>{e.preventDefault();if(!session?.uid){open();socialToast(lang==="ua"?"УВІЙДИ, ЩОБ ПОСТАВИТИ ВПОДОБАННЯ":"LOG IN TO LIKE");return}toggleLike(key,button,count,popover)};
+   button.addEventListener("mouseenter",open);
+   button.addEventListener("mouseleave",()=>setTimeout(()=>{if(!popover.matches(":hover"))close()},140));
+   button.addEventListener("focus",open);
+   button.addEventListener("blur",()=>setTimeout(()=>{if(!popover.matches(":hover"))close()},140));
+   popover.addEventListener("mouseleave",close);
+   popover.addEventListener("mouseenter",()=>popover.classList.add("show"));
+   loadLikes(key,button,count,popover);
+  });
+ }
+function setupSocialActions(){
+ document.querySelectorAll("[data-share]").forEach(b=>b.onclick=shareCubeRage);
+ setupLikes();
+ ["shareSite","rightShare"].forEach(id=>{const b=document.getElementById(id);if(b)b.onclick=shareCubeRage});
+ ["copySiteLink","rightCopy"].forEach(id=>{const b=document.getElementById(id);if(b)b.onclick=copyCubeRageLink});
+ const challenge=document.getElementById("challengeSite");if(challenge)challenge.onclick=challengeCubeRage;
+ setupFollow();
+}
+function renderMiniNews(items){
+ const box=document.getElementById("miniNewsFeed");if(!box)return;
+ if(!items?.length){box.innerHTML=`<div style="color:#666;font-size:9px">${esc(t("no_news","No news yet."))}</div>`;return}
+ box.innerHTML=items.slice(0,4).map(x=>{
+  const title=esc(x.title||x.name||"CUBE RAGE");const image=esc(x.image||x.imageUrl||x.cover||"assets/hero.jpg");const date=esc(x.date||x.published||"");
+  return `<div class="feed-news-item" data-news-go><img src="${image}" alt=""><div><b>${title}</b><span>${date}</span></div></div>`;
+ }).join("");
+ box.querySelectorAll("[data-news-go]").forEach(x=>x.onclick=()=>show("news"));
+}
+function renderSocialNews(items){
+ const box=document.getElementById("socialNewsFeed");if(!box)return;
+ if(!items?.length){box.innerHTML="";return}
+ const x=items[0]||{};const title=esc(x.title||x.name||"CUBE RAGE NEWS");const text=esc(x.text||x.description||x.content||"");const image=esc(x.image||x.imageUrl||x.cover||"assets/hero.jpg");const date=esc(x.date||x.published||"");
+ box.innerHTML=`<article class="feed-card"><div class="feed-head"><div class="feed-author"><img class="feed-avatar" src="${image}" alt=""><div><b>CUBE RAGE NEWS</b><span>${date||t("latest_news")}</span></div></div></div><div class="feed-body"><h3>${title}</h3><p>${text}</p></div><div class="feed-actions"><button class="feed-action" data-view="news">▤ ${esc(t("nav_news"))}</button><button class="feed-action" data-share>↗ ${esc(t("share"))}</button></div></article>`;
+ box.querySelectorAll("[data-share]").forEach(b=>b.onclick=shareCubeRage);box.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>show(b.dataset.view));
+}
+setupSocialActions();
+
+</script>
+</body>
+</html>
